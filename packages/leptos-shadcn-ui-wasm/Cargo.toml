@@ -15,6 +15,9 @@ readme = "README.md"
 # WASM-optimized dependencies only
 [dependencies]
 leptos = "0.8"
+leptos_meta = "0.8"
+serde = { version = "1.0", features = ["derive"] }
+serde-wasm-bindgen = "0.6"
 
 # WASM-compatible utilities
 getrandom = { version = "0.2", features = ["js"] }
@@ -70,7 +73,7 @@ leptos-shadcn-tooltip = { version = "0.9", optional = true }
 
 # WASM-compatible dependencies
 wasm-bindgen = "0.2"
-web-sys = { version = "0.3", features = ["console", "Document", "Element", "HtmlElement", "Window", "Performance"] }
+web-sys = { version = "0.3", features = ["console", "Document", "Element", "HtmlElement", "Window", "Performance", "Storage"] }
 console_error_panic_hook = "0.1"
 
 # WASM-compatible testing

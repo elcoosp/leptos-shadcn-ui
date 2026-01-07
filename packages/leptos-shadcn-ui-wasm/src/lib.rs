@@ -11,6 +11,7 @@
 //! - 🎯 **50+ Components**: Complete ShadCN UI component library
 //! - 🔧 **Easy Integration**: Simple API, works with existing Leptos apps
 //! - ⚡ **Feature Flags**: Include only the components you need
+//! - 🔐 **Proper WASM Initialization**: Comprehensive state management and error handling
 //!
 //! ## Usage
 //!
@@ -18,6 +19,8 @@
 //! [dependencies]
 //! leptos-shadcn-ui-wasm = "0.2"
 //! ```
+//!
+//! ### Basic Component Usage
 //!
 //! ```rust
 //! use leptos::prelude::*;
@@ -33,10 +36,81 @@
 //!     }
 //! }
 //! ```
+//!
+//! ### WASM Initialization
+//!
+//! For proper WASM initialization with state management:
+//!
+//! ```rust
+//! use leptos::prelude::*;
+//! use leptos_shadcn_ui_wasm::init::provide_wasm_init;
+//!
+//! #[component]
+//! pub fn App() -> impl IntoView {
+//!     // Initialize WASM and provide context
+//!     provide_wasm_init();
+//!
+//!     view! {
+//!         // Your app content
+//!     }
+//! }
+//! ```
+//!
+//! Or with custom configuration:
+//!
+//! ```rust
+//! use leptos::prelude::*;
+//! use leptos_shadcn_ui_wasm::init::{provide_wasm_init_with_config, WasmInitConfig};
+//!
+//! #[component]
+//! pub fn App() -> impl IntoView {
+//!     let config = WasmInitConfig {
+//!         verbose: true,
+//!         ..Default::default()
+//!     };
+//!     provide_wasm_init_with_config(config);
+//!
+//!     view! {
+//!         // Your app content
+//!     }
+//! }
+//! ```
+//!
+//! ### Loading States
+//!
+//! Access WASM initialization status in your components:
+//!
+//! ```rust
+//! use leptos::prelude::*;
+//! use leptos_shadcn_ui_wasm::init::WasmInitManager;
+//!
+//! #[component]
+//! pub fn App() -> impl IntoView {
+//!     let wasm_manager = WasmInitManager::from_context()
+//!         .expect("WASM not initialized");
+//!
+//!     view! {
+//!         {move || match wasm_manager.state() {
+//!             _ => view! { <div>"Loading..."</div> },
+//!         }}
+//!     }
+//! }
+//! ```
 
 // Re-export all available components for easy access
 // Note: We re-export the main component from each package
 // Users can access sub-components directly from the individual packages if needed
+
+// WASM initialization module
+pub mod init;
+
+// Re-export init types for convenience
+pub use init::{
+    js_timestamp, log, log_error, log_warn, provide_wasm_init, provide_wasm_init_with_config,
+    init_wasm, init_wasm_with_config, WasmCallback, WasmError, WasmErrorCategory,
+    WasmInitConfig, WasmInitManager, WasmInitState, WasmInitStatus, WasmErrorCallback,
+    WasmProgressCallback,
+};
 
 #[cfg(feature = "accordion")]
 pub use leptos_shadcn_accordion::*;
@@ -187,8 +261,7 @@ pub mod prelude {
 /// WASM-specific utilities and helpers
 pub mod wasm_utils {
     //! Utilities specifically designed for WASM environments
-    
-    use wasm_bindgen::prelude::*;
+
     use web_sys::*;
     
     /// Initialize WASM-specific features
@@ -234,103 +307,69 @@ pub mod bundle_utils {
     }
     
     /// Get list of enabled features
+    #[allow(unused_mut)]
     pub fn get_enabled_features() -> Vec<&'static str> {
-        let mut features = Vec::new();
-        
-        #[cfg(feature = "accordion")]
-        features.push("accordion");
-        #[cfg(feature = "alert")]
-        features.push("alert");
-        #[cfg(feature = "alert-dialog")]
-        features.push("alert-dialog");
-        #[cfg(feature = "aspect-ratio")]
-        features.push("aspect-ratio");
-        #[cfg(feature = "avatar")]
-        features.push("avatar");
-        #[cfg(feature = "badge")]
-        features.push("badge");
-        #[cfg(feature = "breadcrumb")]
-        features.push("breadcrumb");
-        #[cfg(feature = "button")]
-        features.push("button");
-        #[cfg(feature = "calendar")]
-        features.push("calendar");
-        #[cfg(feature = "card")]
-        features.push("card");
-        #[cfg(feature = "carousel")]
-        features.push("carousel");
-        #[cfg(feature = "checkbox")]
-        features.push("checkbox");
-        #[cfg(feature = "collapsible")]
-        features.push("collapsible");
-        #[cfg(feature = "combobox")]
-        features.push("combobox");
-        #[cfg(feature = "command")]
-        features.push("command");
-        #[cfg(feature = "context-menu")]
-        features.push("context-menu");
-        #[cfg(feature = "date-picker")]
-        features.push("date-picker");
-        #[cfg(feature = "dialog")]
-        features.push("dialog");
-        #[cfg(feature = "drawer")]
-        features.push("drawer");
-        #[cfg(feature = "dropdown-menu")]
-        features.push("dropdown-menu");
-        #[cfg(feature = "error-boundary")]
-        features.push("error-boundary");
-        #[cfg(feature = "form")]
-        features.push("form");
-        #[cfg(feature = "hover-card")]
-        features.push("hover-card");
-        #[cfg(feature = "input")]
-        features.push("input");
-        #[cfg(feature = "input-otp")]
-        features.push("input-otp");
-        #[cfg(feature = "label")]
-        features.push("label");
-        #[cfg(feature = "menubar")]
-        features.push("menubar");
-        #[cfg(feature = "navigation-menu")]
-        features.push("navigation-menu");
-        #[cfg(feature = "pagination")]
-        features.push("pagination");
-        #[cfg(feature = "popover")]
-        features.push("popover");
-        #[cfg(feature = "progress")]
-        features.push("progress");
-        #[cfg(feature = "radio-group")]
-        features.push("radio-group");
-        #[cfg(feature = "resizable")]
-        features.push("resizable");
-        #[cfg(feature = "scroll-area")]
-        features.push("scroll-area");
-        #[cfg(feature = "select")]
-        features.push("select");
-        #[cfg(feature = "separator")]
-        features.push("separator");
-        #[cfg(feature = "sheet")]
-        features.push("sheet");
-        #[cfg(feature = "skeleton")]
-        features.push("skeleton");
-        #[cfg(feature = "slider")]
-        features.push("slider");
-        #[cfg(feature = "switch")]
-        features.push("switch");
-        #[cfg(feature = "table")]
-        features.push("table");
-        #[cfg(feature = "tabs")]
-        features.push("tabs");
-        #[cfg(feature = "textarea")]
-        features.push("textarea");
-        #[cfg(feature = "toast")]
-        features.push("toast");
-        #[cfg(feature = "toggle")]
-        features.push("toggle");
-        #[cfg(feature = "tooltip")]
-        features.push("tooltip");
-        
-        features
+        macro_rules! collect_features {
+            ($($feat:literal),*) => {
+                {
+                    let mut features = Vec::new();
+                    $(
+                        #[cfg(feature = $feat)]
+                        features.push($feat);
+                    )*
+                    features
+                }
+            };
+        }
+
+        collect_features!(
+            "accordion",
+            "alert",
+            "alert-dialog",
+            "aspect-ratio",
+            "avatar",
+            "badge",
+            "breadcrumb",
+            "button",
+            "calendar",
+            "card",
+            "carousel",
+            "checkbox",
+            "collapsible",
+            "combobox",
+            "command",
+            "context-menu",
+            "date-picker",
+            "dialog",
+            "drawer",
+            "dropdown-menu",
+            "error-boundary",
+            "form",
+            "hover-card",
+            "input",
+            "input-otp",
+            "label",
+            "menubar",
+            "navigation-menu",
+            "pagination",
+            "popover",
+            "progress",
+            "radio-group",
+            "resizable",
+            "scroll-area",
+            "select",
+            "separator",
+            "sheet",
+            "skeleton",
+            "slider",
+            "switch",
+            "table",
+            "tabs",
+            "textarea",
+            "toast",
+            "toggle",
+            "tooltip"
+        )
     }
 }
 
