@@ -4,30 +4,26 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-# Leptos framework with SSR
-leptos = { version = "0.8", features = ["csr"] }
-# leptos_axum = { version = "0.8", features = ["ssr"] } # Removed for WASM demo
+# Leptos framework (using workspace dependencies)
+leptos = { workspace = true, features = ["csr"] }
 leptos_meta = { version = "0.8" }
 leptos_router = { version = "0.8" }
 
-# WASM dependencies
-console_error_panic_hook = "0.1"
-wasm-bindgen = "0.2"
-web-sys = "0.3"
-js-sys = "0.3"
-getrandom = { version = "0.2", features = ["js"] }
+# WASM dependencies (using workspace where available)
+console_error_panic_hook = { workspace = true }
+wasm-bindgen = { workspace = true }
+web-sys = { workspace = true }
+js-sys = { workspace = true }
+getrandom = { workspace = true }
 uuid = { version = "1.0", features = ["v4", "js"] }
 
-# Local components
-leptos-shadcn-button = { path = "../../packages/leptos/button" }
-leptos-shadcn-card = { path = "../../packages/leptos/card" }
-leptos-shadcn-input = { path = "../../packages/leptos/input" }
+# Local components (using workspace dependencies)
+leptos-shadcn-button = { workspace = true }
+leptos-shadcn-card = { workspace = true }
+leptos-shadcn-input = { workspace = true }
 
-# Tailwind-RS v0.4.2 (Latest with full Leptos integration)
-tailwind-rs-core = "0.4.2"
-tailwind-rs-leptos = "0.4.2"
-
-# UUID support (already defined above)
+# Tailwind-RS (workspace path)
+tailwind-rs-core = { path = "../../packages/tailwind-rs-core" }
 
 # Binary target
 [[bin]]
