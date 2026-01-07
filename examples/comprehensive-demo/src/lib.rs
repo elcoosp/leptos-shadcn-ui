@@ -1,8 +1,11 @@
 use leptos::prelude::*;
 use leptos_meta::*;
-use console_error_panic_hook::set_once as set_panic_hook;
 use wasm_bindgen::prelude::*;
 use web_sys;
+
+// For production: use leptos-shadcn-ui-wasm for proper WASM initialization
+#[cfg(feature = "wasm")]
+use leptos_shadcn_ui_wasm::init::{init_wasm_with_config, WasmInitConfig};
 
 // Import all the refactored components
 use leptos_shadcn_button::{Button, ButtonVariant, ButtonSize};
@@ -11,7 +14,16 @@ use leptos_shadcn_input::*;
 
 #[wasm_bindgen(start)]
 pub fn main() {
-    set_panic_hook();
+    // Initialize WASM with proper state management
+    #[cfg(feature = "wasm")]
+    {
+        let config = WasmInitConfig {
+            verbose: true,
+            ..Default::default()
+        };
+        let _ = init_wasm_with_config(config);
+    }
+
     mount_to_body(|| view! { <App /> })
 }
 
