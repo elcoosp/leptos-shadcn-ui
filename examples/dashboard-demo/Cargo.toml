@@ -7,32 +7,37 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-leptos = { version = "0.8.5", features = ["csr"] }
+# Leptos framework (using workspace dependencies)
+leptos = { workspace = true, features = ["csr"] }
 leptos_meta = "0.8.5"
 leptos_router = "0.8.5"
-leptos-shadcn-button = { path = "../../packages/leptos/button" }
-leptos-shadcn-card = { path = "../../packages/leptos/card" }
-leptos-shadcn-input = { path = "../../packages/leptos/input" }
-leptos-shadcn-badge = { path = "../../packages/leptos/badge" }
-leptos-shadcn-avatar = { path = "../../packages/leptos/avatar" }
-leptos-shadcn-dropdown-menu = { path = "../../packages/leptos/dropdown-menu" }
-leptos-shadcn-separator = { path = "../../packages/leptos/separator" }
-leptos-shadcn-progress = { path = "../../packages/leptos/progress" }
-leptos-shadcn-tabs = { path = "../../packages/leptos/tabs" }
-leptos-shadcn-dialog = { path = "../../packages/leptos/dialog" }
-leptos-shadcn-sheet = { path = "../../packages/leptos/sheet" }
-leptos-shadcn-scroll-area = { path = "../../packages/leptos/scroll-area" }
-leptos-shadcn-collapsible = { path = "../../packages/leptos/collapsible" }
-leptos-shadcn-command = { path = "../../packages/leptos/command" }
-leptos-shadcn-popover = { path = "../../packages/leptos/popover" }
-leptos-shadcn-select = { path = "../../packages/leptos/select" }
-leptos-shadcn-switch = { path = "../../packages/leptos/switch" }
-leptos-shadcn-toast = { path = "../../packages/leptos/toast" }
-leptos-shadcn-tooltip = { path = "../../packages/leptos/tooltip" }
-wasm-bindgen = "0.2"
-web-sys = "0.3"
-console_error_panic_hook = "0.1.7"
-console_log = "1.0.0"
+
+# ShadCN UI components (using workspace dependencies)
+leptos-shadcn-button = { workspace = true }
+leptos-shadcn-card = { workspace = true }
+leptos-shadcn-input = { workspace = true }
+leptos-shadcn-badge = { workspace = true }
+leptos-shadcn-avatar = { workspace = true }
+leptos-shadcn-dropdown-menu = { workspace = true }
+leptos-shadcn-separator = { workspace = true }
+leptos-shadcn-progress = { workspace = true }
+leptos-shadcn-tabs = { workspace = true }
+leptos-shadcn-dialog = { workspace = true }
+leptos-shadcn-sheet = { workspace = true }
+leptos-shadcn-scroll-area = { workspace = true }
+leptos-shadcn-collapsible = { workspace = true }
+leptos-shadcn-command = { workspace = true }
+leptos-shadcn-popover = { workspace = true }
+leptos-shadcn-select = { workspace = true }
+leptos-shadcn-switch = { workspace = true }
+leptos-shadcn-toast = { workspace = true }
+leptos-shadcn-tooltip = { workspace = true }
+
+# WASM dependencies (using workspace where available)
+wasm-bindgen = { workspace = true }
+web-sys = { workspace = true }
+console_error_panic_hook = { workspace = true }
+console_log = { workspace = true }
 
 [dependencies.uuid]
 version = "1.18.1"

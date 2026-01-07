@@ -31,6 +31,7 @@ members = [
     "leptos_v0_8_test_app",  # Leptos v0.8 compatibility test app
     "examples/leptos",  # WASM demo application
     "examples/dashboard-demo",  # Dashboard demo application
+    "examples/comprehensive-demo",  # Comprehensive demo application
     "wasm-demo",  # Dedicated WASM demo for leptos-shadcn-ui-wasm
     
     # Basic components (no internal dependencies)
@@ -85,9 +86,7 @@ members = [
     "packages/leptos/lazy-loading",   # Lazy loading system
     "packages/leptos/registry",       # Component registry
     "packages/leptos/utils",          # Utility functions
-    
-    "examples/leptos",                # Example application
-    
+
     "scripts/run_quality_assessment",
     "scripts/generate_component_tests"
 , "leptos_v0_8_test_app"]
@@ -164,4 +163,20 @@ leptos-shadcn-breadcrumb = { path = "packages/leptos/breadcrumb" }
 leptos-shadcn-lazy-loading = { path = "packages/leptos/lazy-loading" }
 leptos-shadcn-error-boundary = { path = "packages/leptos/error-boundary" }
 leptos-shadcn-registry = { path = "packages/leptos/registry" }
+
+# Additional components
+leptos-shadcn-drawer = { path = "packages/leptos/drawer" }
+leptos-shadcn-context-menu = { path = "packages/leptos/context-menu" }
+leptos-shadcn-alert-dialog = { path = "packages/leptos/alert-dialog" }
+leptos-shadcn-navigation-menu = { path = "packages/leptos/navigation-menu" }
+leptos-shadcn-dropdown-menu = { path = "packages/leptos/dropdown-menu" }
+leptos-shadcn-menubar = { path = "packages/leptos/menubar" }
+leptos-shadcn-hover-card = { path = "packages/leptos/hover-card" }
+leptos-shadcn-aspect-ratio = { path = "packages/leptos/aspect-ratio" }
+leptos-shadcn-collapsible = { path = "packages/leptos/collapsible" }
+leptos-shadcn-scroll-area = { path = "packages/leptos/scroll-area" }
+leptos-shadcn-sheet = { path = "packages/leptos/sheet" }
+leptos-shadcn-avatar = { path = "packages/leptos/avatar" }
+leptos-shadcn-resizable = { path = "packages/leptos/resizable" }
+leptos-shadcn-carousel = { path = "packages/leptos/carousel" }
 

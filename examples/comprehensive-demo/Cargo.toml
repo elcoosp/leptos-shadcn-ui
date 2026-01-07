@@ -3,38 +3,35 @@ name = "leptos-shadcn-comprehensive-demo"
 version = "0.1.0"
 edition = "2021"
 
-[workspace]
-
 [dependencies]
-# Leptos framework
-leptos = { version = "0.8.9", features = ["csr"] }
+# Leptos framework (using workspace dependency)
+leptos = { workspace = true, features = ["csr"] }
 leptos_meta = { version = "0.8.5" }
 
-# WASM dependencies
-console_error_panic_hook = "0.1"
-console_log = "1.0"
-log = "0.4"
-wasm-bindgen = "0.2"
-web-sys = "0.3"
-js-sys = "0.3"
-getrandom = { version = "0.2", features = ["js"] }
+# WASM dependencies (using workspace where available)
+console_error_panic_hook = { workspace = true }
+console_log = { workspace = true }
+log = { workspace = true }
+wasm-bindgen = { workspace = true }
+web-sys = { workspace = true }
+js-sys = { workspace = true }
+getrandom = { workspace = true }
 uuid = { version = "1.0", features = ["v4", "js"] }
 
-# Tailwind-RS
-tailwind-rs-core = "0.8.1"
-tailwind-rs-wasm = "0.8.1"
+# Tailwind-RS (workspace path)
+tailwind-rs-core = { path = "../../packages/tailwind-rs-core" }
 
-# Published ShadCN UI components (refactored versions)
-leptos-shadcn-drawer = "0.8.1"
-leptos-shadcn-context-menu = "0.8.1"
-leptos-shadcn-alert-dialog = "0.8.1"
-leptos-shadcn-select = "0.8.1"
-leptos-shadcn-command = "0.8.1"
+# ShadCN UI components (workspace paths)
+leptos-shadcn-drawer = { workspace = true }
+leptos-shadcn-context-menu = { workspace = true }
+leptos-shadcn-alert-dialog = { workspace = true }
+leptos-shadcn-select = { workspace = true }
+leptos-shadcn-command = { workspace = true }
 
-# Additional components for comprehensive demo
-leptos-shadcn-button = "0.8.1"
-leptos-shadcn-card = "0.8.1"
-leptos-shadcn-input = "0.8.1"
+# Additional components for comprehensive demo (workspace paths)
+leptos-shadcn-button = { workspace = true }
+leptos-shadcn-card = { workspace = true }
+leptos-shadcn-input = { workspace = true }
 
 [lib]
 crate-type = ["cdylib"]
