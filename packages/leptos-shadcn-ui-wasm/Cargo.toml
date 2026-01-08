@@ -12,6 +12,9 @@ keywords = ["leptos", "shadcn", "ui", "wasm", "components"]
 categories = ["web-programming", "gui"]
 readme = "README.md"
 
+[lib]
+crate-type = ["cdylib", "rlib"]
+
 # WASM-optimized dependencies only
 [dependencies]
 leptos = "0.8"

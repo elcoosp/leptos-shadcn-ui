@@ -165,3 +165,65 @@ leptos-shadcn-lazy-loading = { path = "packages/leptos/lazy-loading" }
 leptos-shadcn-error-boundary = { path = "packages/leptos/error-boundary" }
 leptos-shadcn-registry = { path = "packages/leptos/registry" }
 
+# =============================================================================
+# WASM Size Optimization Profiles
+# =============================================================================
+# These profiles are configured to minimize WASM bundle size below 2MB
+
+# Release profile with maximum size optimization
+[profile.release]
+opt-level = "z"        # Optimize for size ('z' is most aggressive)
+lto = "fat"            # Full link-time optimization across all crates
+codegen-units = 1      # Single codegen unit for maximum optimization
+panic = "abort"        # Abort on panic (smaller than unwinding)
+strip = true           # Strip symbols from binary
+overflow-checks = false # Disable overflow checks
+debug = false          # No debug information
+debug-assertions = false
+incremental = false    # Disable incremental for smaller build size
+
+# Apply even more aggressive optimization to dependencies
+[profile.release.package."*"]
+opt-level = "z"
+strip = true
+codegen-units = 1
+
+# Specialized WASM release profile
+[profile.wasm-release]
+inherits = "release"
+opt-level = "z"
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"
+debug = false
+debug-assertions = false
+overflow-checks = false
+incremental = false
+
+# Profile for development (optimized for compilation speed)
+[profile.dev]
+opt-level = 0
+debug = true
+incremental = true
+codegen-units = 256
+
+# Profile for dependencies in dev mode (size-optimized for faster WASM loads)
+[profile.dev.package."*"]
+opt-level = "z"
+debug = false
+incremental = false
+
+# Minimal size profile for absolute smallest WASM
+[profile.min-size]
+inherits = "release"
+opt-level = "z"
+lto = "fat"
+codegen-units = 1
+strip = "symbols"
+panic = "abort"
+debug = false
+debug-assertions = false
+overflow-checks = false
+incremental = false
+
