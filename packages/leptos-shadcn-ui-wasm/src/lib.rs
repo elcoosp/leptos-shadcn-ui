@@ -83,6 +83,7 @@
 //! ```rust
 //! use leptos::prelude::*;
 //! use leptos_shadcn_ui_wasm::init::WasmInitManager;
+//! use leptos_shadcn_ui_wasm::loading::{WasmSpinner, WasmProgressBar, WasmLoadingText};
 //!
 //! #[component]
 //! pub fn App() -> impl IntoView {
@@ -91,7 +92,12 @@
 //!
 //!     view! {
 //!         {move || match wasm_manager.state() {
-//!             _ => view! { <div>"Loading..."</div> },
+//!             _ => view! {
+//!                 <div class="flex flex-col items-center gap-4">
+//!                     <WasmSpinner size="lg" />
+//!                     <WasmLoadingText text=Signal::derive(move || wasm_manager.status().get().message.clone()) />
+//!                 </div>
+//!             },
 //!         }}
 //!     }
 //! }
@@ -103,6 +109,7 @@
 
 // WASM initialization module
 pub mod init;
+pub mod loading;
 
 // Re-export init types for convenience
 pub use init::{
@@ -110,6 +117,11 @@ pub use init::{
     init_wasm, init_wasm_with_config, WasmCallback, WasmError, WasmErrorCategory,
     WasmInitConfig, WasmInitManager, WasmInitState, WasmInitStatus, WasmErrorCallback,
     WasmProgressCallback,
+};
+
+// Re-export loading components
+pub use loading::{
+    WasmInlineLoader, WasmLoadingText, WasmProgressBar, WasmSpinner,
 };
 
 #[cfg(feature = "accordion")]
