@@ -89,8 +89,9 @@ members = [
     "examples/leptos",                # Example application
     
     "scripts/run_quality_assessment",
-    "scripts/generate_component_tests"
-, "leptos_v0_8_test_app"]
+    "scripts/generate_component_tests",
+    "packages/bundle-size-monitor",  # Bundle size monitoring tool
+    "leptos_v0_8_test_app"]
 
 [workspace.package]
 authors = ["CloudShuttle <info@cloudshuttle.com>"]
