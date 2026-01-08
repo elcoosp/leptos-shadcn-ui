@@ -230,6 +230,35 @@ build-production: ## Build production-optimized version
 	@echo "🏗️ Building production-optimized version..."
 	./scripts/build_production.sh
 
+# WASM Size Optimization
+build-wasm-optimized: ## Build WASM with size optimizations (<2MB target)
+	@echo "🚀 Building WASM with size optimizations..."
+	./scripts/build-wasm-optimized.sh
+
+build-wasm-release: ## Build WASM release with maximum size optimizations
+	@echo "🏗️ Building WASM release (maximum optimization)..."
+	cargo build --profile wasm-release --target wasm32-unknown-unknown -p leptos-shadcn-ui-wasm
+
+check-wasm-size: ## Check WASM bundle size without building
+	@echo "📊 Checking WASM bundle sizes..."
+	@find . -name "*.wasm" -type f -exec sh -c 'echo "$$(stat -f%z "$1" 2>/dev/null || stat -c%s "$1" 2>/dev/null) bytes - $$1"' _ {} \; 2>/dev/null | sort -n | tail -10
+
+measure-wasm: ## Measure and report WASM bundle size
+	@echo "📏 Measuring WASM bundle size..."
+	@if [ -f "target/wasm32-unknown-unknown/release/leptos_shadcn_ui_wasm.wasm" ]; then \
+		SIZE=$$(stat -c%s "target/wasm32-unknown-unknown/release/leptos_shadcn_ui_wasm.wasm" 2>/dev/null || stat -f%z "target/wasm32-unknown-unknown/release/leptos_shadcn_ui_wasm.wasm"); \
+		echo "Size: $$SIZE bytes ($$(awk "BEGIN {printf \"%.2f\", $$size/1048576}") MB)"; \
+		if [ $$SIZE -le 2097152 ]; then \
+			echo "✅ SUCCESS: Under 2MB target"; \
+		else \
+			echo "❌ FAILED: Exceeds 2MB target"; \
+		fi \
+	else \
+		echo "No WASM file found. Run 'make build-wasm-optimized' first."; \
+	fi
+
+optimize-wasm: build-wasm-optimized check-wasm-size ## Build optimized WASM and check size
+
 production-check: analyze-bundle build-production ## Complete production readiness check
 	@echo "✅ Production readiness check complete!"
 
