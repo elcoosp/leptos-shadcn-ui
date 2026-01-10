@@ -25,6 +25,13 @@ Component library reference:
 - [Accessibility Guide](./components/accessibility/)
 - [Theming Guide](./components/theming/)
 
+### 🎓 [Tutorials](./tutorials/README.md)
+Step-by-step video and written tutorials:
+- [Getting Started Series](./tutorials/video-tutorials/getting-started/) - Installation, first component, forms, theming
+- [Component Series](./tutorials/video-tutorials/components/) - Form components, layouts, navigation
+- [Advanced Patterns](./tutorials/video-tutorials/advanced/) - State management, validation, performance
+- [Video Production Guide](./tutorials/video-tutorials/production-guide.md) - Create your own tutorials
+
 ### 🧪 [Testing](./testing/README.md)
 Comprehensive testing documentation:
 - [Testing Strategy](./testing/test-strategy.md)
@@ -58,8 +65,9 @@ How to contribute to the project:
 
 ### For New Users
 1. Start with [Getting Started](./getting-started/README.md)
-2. Try the [Basic Examples](./getting-started/examples/)
-3. Read the [Component API Reference](./components/api-reference/)
+2. Watch the [Video Tutorials](./tutorials/README.md)
+3. Try the [Basic Examples](./getting-started/examples/)
+4. Read the [Component API Reference](./components/api-reference/)
 
 ### For Developers
 1. Review [Architecture Overview](./architecture/README.md)
