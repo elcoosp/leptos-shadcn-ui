@@ -98,3 +98,35 @@ debug = false
 debug-assertions = false
 overflow-checks = false
 incremental = false
+
+# =============================================================================
+# Test Coverage Configuration
+# =============================================================================
+# These settings enable automated test coverage reporting
+
+[env]
+# Coverage output directory
+COVERAGE_DIR = "target/coverage"
+COVERAGE_REPORT_TYPES = "html,json,lcov"
+
+# Coverage quality thresholds (minimum requirements)
+COVERAGE_MINIMUM_LINE_COVERAGE = "95"
+COVERAGE_MINIMUM_BRANCH_COVERAGE = "90"
+COVERAGE_MINIMUM_FUNCTION_COVERAGE = "100"
+
+# Disable incremental compilation for accurate coverage measurements
+CARGO_INCREMENTAL = "0"
+
+# LLVM coverage profiling settings
+LLVM_PROFILE_FILE = "target/coverage/%p-%m.profraw"
+
+# Coverage exclusion patterns (comma-separated)
+COVERAGE_EXCLUDE_PATTERNS = "tests/*,examples/*,benches/*,bin/*"
+
+# Report generation settings
+COVERAGE_HTML_TITLE = "Leptos ShadCN UI - Test Coverage Report"
+COVERAGE_OUTPUT_DIR = "coverage-reports"
+
+# CI/CD integration
+CI_COVERAGE_COMMENT = "true"
+COVERAGE_BADGE_OUTPUT = "coverage-reports/badges"
