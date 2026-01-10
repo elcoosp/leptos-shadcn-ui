@@ -6,14 +6,15 @@ A comprehensive guide for implementing mobile-first design patterns in Leptos-Sh
 
 1. [Principles](#principles)
 2. [Responsive Breakpoints](#responsive-breakpoints)
-3. [Layout Patterns](#layout-patterns)
-4. [Component Guidelines](#component-guidelines)
-5. [Touch Targets](#touch-targets)
-6. [Typography](#typography)
-7. [Spacing](#spacing)
-8. [Navigation](#navigation)
-9. [Forms](#forms)
-10. [Performance](#performance)
+3. [Orientation Support](#orientation-support)
+4. [Layout Patterns](#layout-patterns)
+5. [Component Guidelines](#component-guidelines)
+6. [Touch Targets](#touch-targets)
+7. [Typography](#typography)
+8. [Spacing](#spacing)
+9. [Navigation](#navigation)
+10. [Forms](#forms)
+11. [Performance](#performance)
 
 ---
 
@@ -81,6 +82,88 @@ const CLASS_RESPONSIVE = "w-full px-4 sm:px-6 md:px-8 lg:w-3/4 lg:px-0";
 - **lg**: Small laptops, desktops (1024px+)
 - **xl**: Standard desktops (1280px+)
 - **2xl**: Large desktops (1536px+)
+
+---
+
+## Orientation Support
+
+### Why Orientation Matters
+
+Modern devices support both portrait and landscape orientations, each presenting unique design opportunities:
+
+- **Portrait**: Traditional mobile view, optimal for single-handed use
+- **Landscape**: Wider viewport, better for tablets, media consumption, and productivity
+
+**Important**: Always test your components in both orientations!
+
+### Orientation Media Queries
+
+```css
+/* Landscape (width > height) */
+@media (orientation: landscape) {
+  /* Styles for landscape mode */
+}
+
+/* Portrait (height > width) */
+@media (orientation: portrait) {
+  /* Styles for portrait mode */
+}
+```
+
+### Orientation + Breakpoint Combinations
+
+```css
+/* Tablet landscape (768px+ in landscape) */
+@media (min-width: 768px) and (orientation: landscape) {
+  /* Tablet-specific landscape styles */
+}
+
+/* Mobile landscape (phones in landscape) */
+@media (min-width: 480px) and (orientation: landscape) {
+  /* Mobile landscape styles */
+}
+```
+
+### Common Orientation Patterns
+
+```rust
+// Stack in portrait, row in landscape
+const ORIENTATION_AWARE = &str =
+    "flex flex-col portrait:flex-col landscape:flex-row";
+
+// Single column portrait, two column landscape
+const ORIENTATION_GRID = &str =
+    "grid grid-cols-1 portrait:grid-cols-1 landscape:grid-cols-2";
+
+// Hide bottom nav in landscape, show in portrait
+const BOTTOM_NAV = &str =
+    "fixed bottom-0 left-0 right-0 landscape:hidden portrait:block";
+```
+
+### Landscape-Specific Utilities
+
+Include the orientation CSS file for additional utilities:
+
+```html
+<link rel="stylesheet" href="/style/orientation.css">
+```
+
+Available classes:
+- `landscape:flex-row` - Row direction in landscape
+- `landscape:grid-cols-2` - 2 columns in landscape
+- `landscape:gap-6` - Larger gap in landscape
+- `landscape:hidden` - Hide in landscape
+- `landscape-md:grid-cols-3` - Tablet landscape: 3 columns
+
+### Tablet Landscape Best Practices
+
+Tablets in landscape mode are a primary use case:
+- Use horizontal space for side-by-side content
+- Implement horizontal navigation when appropriate
+- Consider split-screen multitasking scenarios
+- Maintain touch-friendly sizing (44×44px minimum)
+
+**See Also**: [Landscape Orientation Guide](./landscape-orientation.md) for comprehensive landscape support guidelines.
 
 ---
 
