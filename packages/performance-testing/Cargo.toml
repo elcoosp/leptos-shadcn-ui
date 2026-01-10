@@ -19,7 +19,7 @@ thiserror = "1.0"
 
 # Time handling
 chrono = { version = "0.4", features = ["serde"] }
-instant = "0.1"
+web-time = "0.2"
 
 # File system operations
 walkdir = "2.0"

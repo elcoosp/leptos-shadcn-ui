@@ -312,7 +312,7 @@ impl PerformanceTestSuite {
         
         // Actual measurements
         for _ in 0..self.config.test_iterations {
-            let start = instant::Instant::now();
+            let start = web_time::Instant::now();
             let _ = self.simulate_render().await;
             let duration = start.elapsed().as_secs_f64() * 1000.0; // Convert to milliseconds
             measurements.push(duration);
