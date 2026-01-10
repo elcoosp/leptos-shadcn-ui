@@ -221,6 +221,58 @@ accessibility-audit-focus: ## Run accessibility audit focusing on focus manageme
 	@echo "♿ Running accessibility audit focusing on focus management..."
 	./scripts/run-accessibility-audit.sh --no-color-contrast --no-screen-reader
 
+# Test Coverage Reporting
+coverage: ## Generate comprehensive coverage reports (HTML, JSON, LCov)
+	@echo "📊 Generating coverage reports..."
+	./scripts/generate_coverage_report.sh --format all
+
+coverage-html: ## Generate HTML coverage report
+	@echo "📊 Generating HTML coverage report..."
+	./scripts/generate_coverage_report.sh --format html --open
+
+coverage-json: ## Generate JSON coverage report
+	@echo "📊 Generating JSON coverage report..."
+	./scripts/generate_coverage_report.sh --format json
+
+coverage-lcov: ## Generate LCov coverage report
+	@echo "📊 Generating LCov coverage report..."
+	./scripts/generate_coverage_report.sh --format lcov
+
+coverage-terminal: ## Generate terminal coverage report
+	@echo "📊 Generating terminal coverage report..."
+	./scripts/generate_coverage_report.sh --format terminal
+
+coverage-component: ## Generate coverage for specific component (usage: make coverage-component COMPONENT=button)
+	@if [ -z "$(COMPONENT)" ]; then \
+		echo "❌ Please specify COMPONENT. Usage: make coverage-component COMPONENT=button"; \
+		exit 1; \
+	fi
+	@echo "📊 Generating coverage for $(COMPONENT)..."
+	./scripts/generate_coverage_report.sh --package leptos-shadcn-$(COMPONENT)
+
+coverage-open: ## Open HTML coverage report in browser
+	@echo "📊 Opening coverage report..."
+	./scripts/generate_coverage_report.sh --format html --open
+
+coverage-ci: ## Generate coverage reports in CI mode
+	@echo "📊 Generating coverage reports (CI mode)..."
+	./scripts/generate_coverage_report.sh --ci --fail-under 95
+
+coverage-verify: ## Verify coverage meets minimum thresholds
+	@echo "📊 Verifying coverage thresholds..."
+	./scripts/generate_coverage_report.sh --fail-under 95 --ci
+
+coverage-badge: ## Generate coverage badge
+	@echo "📊 Generating coverage badge..."
+	python3 scripts/coverage_reporter.py --format json --output-dir coverage-reports/badges
+
+coverage-trend: ## Analyze coverage trends over time
+	@echo "📊 Analyzing coverage trends..."
+	python3 scripts/coverage_reporter.py --trend --format terminal
+
+coverage-full: coverage coverage-badge coverage-trend ## Generate all coverage reports and badges
+	@echo "✅ Full coverage report generation complete!"
+
 # Production Readiness
 analyze-bundle: ## Analyze bundle sizes and optimization opportunities
 	@echo "📦 Analyzing bundle sizes for production readiness..."
