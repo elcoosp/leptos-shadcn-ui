@@ -42,30 +42,42 @@ pub fn App() -> impl IntoView {
 
 #[component]
 pub fn DashboardLayout() -> impl IntoView {
-    let sidebar_open = RwSignal::new(true);
+    let sidebar_open = RwSignal::new(false); // Closed by default on mobile
     let theme = RwSignal::new("light".to_string());
 
     view! {
         <div class="min-h-screen bg-background">
-            <div class="flex">
-                // Sidebar
+            <div class="flex flex-col md:flex-row">
+                // Mobile overlay when sidebar is open
                 <div class=move || {
                     if sidebar_open.get() {
-                        "w-64 bg-card border-r border-border transition-all duration-300"
+                        "fixed inset-0 z-40 bg-black/50 md:hidden"
                     } else {
-                        "w-0 bg-card border-r border-border transition-all duration-300 overflow-hidden"
+                        "hidden"
                     }
+                }
+                on:click=move |_| sidebar_open.set(false)
+                ></div>
+
+                // Sidebar - fixed mobile, relative desktop
+                <div class=move || {
+                    let base_classes = if sidebar_open.get() {
+                        "fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transition-transform duration-300 md:relative md:translate-x-0"
+                    } else {
+                        "fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transition-transform duration-300 -translate-x-full md:relative md:translate-x-0"
+                    };
+                    base_classes
                 }>
-                    <Sidebar />
+                    <Sidebar close_sidebar=move || sidebar_open.set(false) />
                 </div>
-                
+
                 // Main content
-                <div class="flex-1 flex flex-col">
+                <div class="flex-1 flex flex-col min-w-0">
                     // Header
                     <Header sidebar_open=sidebar_open theme=theme />
-                    
-                    // Dashboard content
-                    <main class="flex-1 p-6">
+
+                    // Dashboard content - responsive padding
+                    <main class="flex-1 p-4 sm:p-6 lg:p-8">
                         <DashboardContent />
                     </main>
                 </div>
@@ -75,20 +87,20 @@ pub fn DashboardLayout() -> impl IntoView {
 }
 
 #[component]
-pub fn Sidebar() -> impl IntoView {
+pub fn Sidebar(close_sidebar: impl Fn() + 'static) -> impl IntoView {
     view! {
-        <div class="p-6">
-            <div class="flex items-center gap-2 mb-8">
-                <div class="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
-                    <span class="text-primary-foreground font-bold">L</span>
+        <div class="flex flex-col h-full p-4 sm:p-6">
+            <div class="flex items-center gap-2 mb-6 sm:mb-8">
+                <div class="h-10 w-10 sm:h-8 sm:w-8 bg-primary rounded-md flex items-center justify-center flex-shrink-0">
+                    <span class="text-primary-foreground font-bold text-sm sm:text-base">L</span>
                 </div>
-                <div>
-                    <h1 class="text-lg font-semibold">Leptos Dashboard</h1>
-                    <p class="text-sm text-muted-foreground">Rust/WASM Demo</p>
+                <div class="min-w-0">
+                    <h1 class="text-base sm:text-lg font-semibold truncate">Leptos Dashboard</h1>
+                    <p class="text-xs sm:text-sm text-muted-foreground truncate">Rust/WASM Demo</p>
                 </div>
             </div>
-            
-            <nav class="space-y-2">
+
+            <nav class="flex-1 space-y-1 sm:space-y-2 overflow-y-auto">
                 <NavItem icon="🏠" label="Dashboard" active=true />
                 <NavItem icon="📊" label="Analytics" active=false />
                 <NavItem icon="📁" label="Projects" active=false />
@@ -96,6 +108,14 @@ pub fn Sidebar() -> impl IntoView {
                 <NavItem icon="📄" label="Documents" active=false />
                 <NavItem icon="⚙️" label="Settings" active=false />
             </nav>
+
+            // Close button on mobile only
+            <button
+                class="md:hidden mt-4 w-full inline-flex items-center justify-center h-11 rounded-md border border-input bg-background px-4 text-sm font-medium hover:bg-accent"
+                on:click=move |_| close_sidebar()
+            >
+                "Close Menu"
+            </button>
         </div>
     }
 }
@@ -107,18 +127,19 @@ pub fn NavItem(
     #[prop(into)] active: bool,
 ) -> impl IntoView {
     view! {
-        <a 
-            href="#" 
+        <a
+            href="#"
             class=move || {
                 if active {
-                    "flex items-center gap-3 px-3 py-2 rounded-md bg-accent text-accent-foreground"
+                    // Larger touch target on mobile (h-11), normal on desktop (h-10)
+                    "flex items-center gap-3 px-3 py-2.5 sm:py-2 rounded-md bg-accent text-accent-foreground min-h-[44px] sm:min-h-0"
                 } else {
-                    "flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors"
+                    "flex items-center gap-3 px-3 py-2.5 sm:py-2 rounded-md hover:bg-accent hover:text-accent-foreground transition-colors min-h-[44px] sm:min-h-0"
                 }
             }
         >
-            <span class="text-lg">{icon}</span>
-            <span class="font-medium">{label}</span>
+            <span class="text-lg sm:text-base">{icon}</span>
+            <span class="font-medium text-sm sm:text-base">{label}</span>
         </a>
     }
 }
@@ -129,44 +150,43 @@ pub fn Header(
     theme: RwSignal<String>,
 ) -> impl IntoView {
     view! {
-        <header class="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div class="flex h-16 items-center justify-between px-6">
-                <div class="flex items-center gap-4">
-                    <Button 
-                        variant=ButtonVariant::Ghost
-                        size=ButtonSize::Icon
+        <header class="sticky top-0 z-30 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div class="flex h-16 items-center justify-between px-4 sm:px-6">
+                <div class="flex items-center gap-3 sm:gap-4">
+                    // Menu button - larger touch target on mobile
+                    <button
+                        class="inline-flex items-center justify-center h-11 w-11 sm:h-10 sm:w-10 rounded-md hover:bg-accent transition-colors"
                         on:click=move |_| sidebar_open.set(!sidebar_open.get())
                     >
                         <span class="sr-only">"Toggle sidebar"</span>
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         </svg>
-                    </Button>
-                    
-                    <div class="flex items-center gap-2">
-                        <h2 class="text-xl font-semibold">"Dashboard"</h2>
+                    </button>
+
+                    <div class="flex items-center gap-2 min-w-0">
+                        <h2 class="text-lg sm:text-xl font-semibold truncate">"Dashboard"</h2>
                         <Badge variant=BadgeVariant::Secondary>"Rust/WASM"</Badge>
                     </div>
                 </div>
-                
-                <div class="flex items-center gap-4">
-                    <Button 
-                        variant=ButtonVariant::Ghost
-                        size=ButtonSize::Icon
+
+                <div class="flex items-center gap-2 sm:gap-4">
+                    <button
+                        class="inline-flex items-center justify-center h-11 w-11 sm:h-10 sm:w-10 rounded-md hover:bg-accent transition-colors"
                         on:click=move |_| theme.set(if theme.get() == "light" { "dark".to_string() } else { "light".to_string() })
                     >
                         <span class="sr-only">"Toggle theme"</span>
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="h-5 w-5 sm:h-5 sm:w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                         </svg>
-                    </Button>
-                    
-                    <Button variant=ButtonVariant::Ghost size=ButtonSize::Icon>
+                    </button>
+
+                    <button class="inline-flex items-center justify-center h-11 w-11 sm:h-10 sm:w-10 rounded-md hover:bg-accent transition-colors">
                         <Avatar>
                             <AvatarImage src="https://github.com/shadcn.png" />
                             <AvatarFallback>"CN"</AvatarFallback>
                         </Avatar>
-                    </Button>
+                    </button>
                 </div>
             </div>
         </header>
@@ -176,23 +196,24 @@ pub fn Header(
 #[component]
 pub fn DashboardContent() -> impl IntoView {
     view! {
-        <div class="space-y-6">
-            // Welcome section
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-3xl font-bold tracking-tight">"Welcome back!"</h1>
-                    <p class="text-muted-foreground">"Here's what's happening with your projects today."</p>
+        <div class="space-y-6 sm:space-y-8">
+            // Welcome section - stack on mobile
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div class="min-w-0">
+                    <h1 class="text-2xl sm:text-3xl font-bold tracking-tight">"Welcome back!"</h1>
+                    <p class="text-sm sm:text-base text-muted-foreground">"Here's what's happening with your projects today."</p>
                 </div>
-                <Button>
+                // Full width on mobile, auto on desktop
+                <button class="inline-flex items-center justify-center w-full sm:w-auto h-11 sm:h-10 rounded-md bg-primary px-4 sm:px-8 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90">
                     <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                     </svg>
                     "New Project"
-                </Button>
+                </button>
             </div>
-            
-            // Stats cards
-            <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+
+            // Stats cards - responsive grid
+            <div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
                 <StatCard 
                     title="Total Revenue" 
                     value="$1,250.00" 
@@ -273,63 +294,64 @@ pub fn DashboardContent() -> impl IntoView {
                 </div>
             </div>
             
-            // Data table
+            // Data table - horizontally scrollable on mobile
             <Card>
-                <CardHeader>
-                    <CardTitle>"Project Documents"</CardTitle>
-                    <CardDescription>"Manage your project documents and track progress"</CardDescription>
+                <CardHeader class="px-4 sm:px-6">
+                    <CardTitle class="text-lg sm:text-xl">"Project Documents"</CardTitle>
+                    <CardDescription class="text-sm sm:text-base">"Manage your project documents and track progress"</CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent class="px-4 sm:px-6">
                     <div class="rounded-md border">
-                        <div class="overflow-x-auto">
-                            <table class="w-full">
+                        // Horizontal scroll wrapper for mobile
+                        <div class="-mx-4 overflow-x-auto px-4 sm:mx-0 sm:overflow-visible sm:px-0">
+                            <table class="w-full min-w-[600px]">
                                 <thead class="bg-muted/50">
                                     <tr>
-                                        <th class="px-4 py-3 text-left text-sm font-medium">"Document"</th>
-                                        <th class="px-4 py-3 text-left text-sm font-medium">"Type"</th>
-                                        <th class="px-4 py-3 text-left text-sm font-medium">"Status"</th>
-                                        <th class="px-4 py-3 text-left text-sm font-medium">"Assignee"</th>
-                                        <th class="px-4 py-3 text-left text-sm font-medium">"Actions"</th>
+                                        <th class="px-4 py-3 text-left text-xs sm:text-sm font-medium">"Document"</th>
+                                        <th class="px-4 py-3 text-left text-xs sm:text-sm font-medium">"Type"</th>
+                                        <th class="px-4 py-3 text-left text-xs sm:text-sm font-medium">"Status"</th>
+                                        <th class="px-4 py-3 text-left text-xs sm:text-sm font-medium">"Assignee"</th>
+                                        <th class="px-4 py-3 text-left text-xs sm:text-sm font-medium">"Actions"</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-border">
                                     <tr>
-                                        <td class="px-4 py-3 font-medium">"Cover page"</td>
-                                        <td class="px-4 py-3">"Cover page"</td>
+                                        <td class="px-4 py-3 text-sm font-medium">"Cover page"</td>
+                                        <td class="px-4 py-3 text-sm">"Cover page"</td>
                                         <td class="px-4 py-3">
                                             <Badge variant=BadgeVariant::Secondary>"In Process"</Badge>
                                         </td>
-                                        <td class="px-4 py-3">"Eddie Lake"</td>
+                                        <td class="px-4 py-3 text-sm">"Eddie Lake"</td>
                                         <td class="px-4 py-3">
-                                            <Button variant=ButtonVariant::Ghost size=ButtonSize::Sm>
+                                            <button class="inline-flex items-center justify-center h-9 px-3 rounded-md hover:bg-accent text-sm">
                                                 "Open menu"
-                                            </Button>
+                                            </button>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="px-4 py-3 font-medium">"Table of contents"</td>
-                                        <td class="px-4 py-3">"Table of contents"</td>
+                                        <td class="px-4 py-3 text-sm font-medium">"Table of contents"</td>
+                                        <td class="px-4 py-3 text-sm">"Table of contents"</td>
                                         <td class="px-4 py-3">
                                             <Badge variant=BadgeVariant::Default>"Done"</Badge>
                                         </td>
-                                        <td class="px-4 py-3">"Eddie Lake"</td>
+                                        <td class="px-4 py-3 text-sm">"Eddie Lake"</td>
                                         <td class="px-4 py-3">
-                                            <Button variant=ButtonVariant::Ghost size=ButtonSize::Sm>
+                                            <button class="inline-flex items-center justify-center h-9 px-3 rounded-md hover:bg-accent text-sm">
                                                 "Open menu"
-                                            </Button>
+                                            </button>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td class="px-4 py-3 font-medium">"Executive summary"</td>
-                                        <td class="px-4 py-3">"Narrative"</td>
+                                        <td class="px-4 py-3 text-sm font-medium">"Executive summary"</td>
+                                        <td class="px-4 py-3 text-sm">"Narrative"</td>
                                         <td class="px-4 py-3">
                                             <Badge variant=BadgeVariant::Default>"Done"</Badge>
                                         </td>
-                                        <td class="px-4 py-3">"Eddie Lake"</td>
+                                        <td class="px-4 py-3 text-sm">"Eddie Lake"</td>
                                         <td class="px-4 py-3">
-                                            <Button variant=ButtonVariant::Ghost size=ButtonSize::Sm>
+                                            <button class="inline-flex items-center justify-center h-9 px-3 rounded-md hover:bg-accent text-sm">
                                                 "Open menu"
-                                            </Button>
+                                            </button>
                                         </td>
                                     </tr>
                                 </tbody>
