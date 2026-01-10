@@ -105,7 +105,7 @@ impl ValidationErrorSource {
 }
 
 /// Recovery suggestion for validation errors
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct ValidationRecoverySuggestion {
     /// User-friendly action to take
     pub action: String,

@@ -1,5 +1,5 @@
 //! Validation rules implementation for the Input component
-//! 
+//!
 //! This module contains the core validation logic for different rule types.
 
 use super::types::{ValidationRule, ValidationResult, ValidationError};
@@ -9,33 +9,33 @@ pub fn validate_rule(value: &str, rule: &ValidationRule) -> Result<(), Validatio
     match rule {
         ValidationRule::Required => {
             if value.trim().is_empty() {
-                Err(ValidationError {
-                    field: String::new(),
-                    message: "This field is required".to_string(),
-                    rule: rule.clone(),
-                })
+                Err(ValidationError::new(
+                    String::new(),
+                    "This field is required".to_string(),
+                    rule.clone(),
+                ))
             } else {
                 Ok(())
             }
         }
         ValidationRule::MinLength(min_len) => {
             if value.len() < *min_len {
-                Err(ValidationError {
-                    field: String::new(),
-                    message: format!("Must be at least {} characters long", min_len),
-                    rule: rule.clone(),
-                })
+                Err(ValidationError::new(
+                    String::new(),
+                    format!("Must be at least {} characters long", min_len),
+                    rule.clone(),
+                ))
             } else {
                 Ok(())
             }
         }
         ValidationRule::MaxLength(max_len) => {
             if value.len() > *max_len {
-                Err(ValidationError {
-                    field: String::new(),
-                    message: format!("Must be no more than {} characters long", max_len),
-                    rule: rule.clone(),
-                })
+                Err(ValidationError::new(
+                    String::new(),
+                    format!("Must be no more than {} characters long", max_len),
+                    rule.clone(),
+                ))
             } else {
                 Ok(())
             }
@@ -44,22 +44,22 @@ pub fn validate_rule(value: &str, rule: &ValidationRule) -> Result<(), Validatio
             if is_valid_email(value) {
                 Ok(())
             } else {
-                Err(ValidationError {
-                    field: String::new(),
-                    message: "Please enter a valid email address".to_string(),
-                    rule: rule.clone(),
-                })
+                Err(ValidationError::new(
+                    String::new(),
+                    "Please enter a valid email address".to_string(),
+                    rule.clone(),
+                ))
             }
         }
         ValidationRule::Pattern(pattern) => {
             if matches_pattern(value, pattern) {
                 Ok(())
             } else {
-                Err(ValidationError {
-                    field: String::new(),
-                    message: "Please enter a valid format".to_string(),
-                    rule: rule.clone(),
-                })
+                Err(ValidationError::new(
+                    String::new(),
+                    "Please enter a valid format".to_string(),
+                    rule.clone(),
+                ))
             }
         }
         ValidationRule::Custom(_description) => {
