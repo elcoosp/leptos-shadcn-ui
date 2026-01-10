@@ -11,7 +11,7 @@ pub fn Dialog(
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
     let internal_open = RwSignal::new(false);
-    
+
     let open_state = Signal::derive(move || {
         if open.get() != internal_open.get() {
             open.get()
@@ -30,6 +30,12 @@ pub fn Dialog(
     provide_context(DialogContextValue {
         open: open_state,
         set_open,
+    });
+
+    // Clean up internal state when component unmounts
+    on_cleanup(move || {
+        // Reset internal state to prevent memory leaks
+        internal_open.set(false);
     });
 
     view! {

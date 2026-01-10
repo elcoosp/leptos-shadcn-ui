@@ -93,7 +93,7 @@ pub fn SignalManagedCommand(
     // Apply lifecycle optimization
     theme_manager.apply_lifecycle_optimization();
 
-    let command_state_for_disabled = command_state.clone();
+    let _command_state_for_disabled = command_state.clone();
     view! {
         <div
             class=move || computed_class.get()

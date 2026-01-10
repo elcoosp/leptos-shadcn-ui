@@ -93,7 +93,7 @@ impl SnapshotTester {
     fn capture_snapshot<V: leptos::IntoView>(
         &self,
         name: &str,
-        component: V,
+        _component: V,
         props_description: &str,
     ) -> Snapshot {
         // In a real implementation, this would render the component to HTML

@@ -3,7 +3,7 @@
 #[cfg(feature = "leptos")]
 use leptos::prelude::*;
 #[cfg(feature = "leptos")]
-use crate::{TailwindClasses, Color, Variant, Size, Theme, ThemeManager, Responsive};
+use crate::{TailwindClasses, Color, Responsive, Viewport, Breakpoint, Orientation};
 
 #[cfg(feature = "leptos")]
 /// A Leptos-compatible class signal that provides reactive styling.
@@ -19,7 +19,7 @@ pub struct ClassSignal {
 impl ClassSignal {
     /// Create a new ClassSignal with initial classes.
     pub fn new(initial_classes: impl Into<String>) -> Self {
-        let (classes, set_classes) = create_signal(initial_classes.into());
+        let (classes, set_classes) = signal(initial_classes.into());
         Self { classes, set_classes }
     }
 
@@ -65,7 +65,7 @@ pub struct ThemeSignal {
 impl ThemeSignal {
     /// Create a new ThemeSignal with the default theme.
     pub fn new(initial_theme_name: impl Into<String>) -> Self {
-        let (theme_name, set_theme_name) = create_signal(initial_theme_name.into());
+        let (theme_name, set_theme_name) = signal(initial_theme_name.into());
         Self { theme_name, set_theme_name }
     }
 
@@ -117,7 +117,7 @@ pub struct ColorSignal {
 impl ColorSignal {
     /// Create a new ColorSignal with an initial color.
     pub fn new(initial_color: Color) -> Self {
-        let (color, set_color) = create_signal(initial_color);
+        let (color, set_color) = signal(initial_color);
         Self { color, set_color }
     }
 
@@ -159,13 +159,134 @@ pub struct ResponsiveSignal {
 impl ResponsiveSignal {
     /// Create a new ResponsiveSignal with initial settings.
     pub fn new(initial_responsive: Responsive) -> Self {
-        let (responsive, set_responsive) = create_signal(initial_responsive);
+        let (responsive, set_responsive) = signal(initial_responsive);
         Self { responsive, set_responsive }
     }
 
     /// Set new responsive settings.
     pub fn set_responsive(&self, responsive: Responsive) {
         self.set_responsive.set(responsive);
+    }
+}
+
+#[cfg(feature = "leptos")]
+/// A viewport signal that provides reactive viewport information for responsive design.
+#[derive(Debug, Clone)]
+pub struct ViewportSignal {
+    /// The current viewport
+    pub viewport: ReadSignal<Viewport>,
+    /// The setter for viewport
+    pub set_viewport: WriteSignal<Viewport>,
+    /// The current breakpoint (derived from viewport width)
+    pub breakpoint: Memo<Breakpoint>,
+    /// Whether the viewport is mobile
+    pub is_mobile: Memo<bool>,
+    /// Whether the viewport is tablet
+    pub is_tablet: Memo<bool>,
+    /// Whether the viewport is desktop
+    pub is_desktop: Memo<bool>,
+    /// Current orientation
+    pub orientation: Memo<Orientation>,
+}
+
+#[cfg(feature = "leptos")]
+impl ViewportSignal {
+    /// Create a new ViewportSignal with default viewport.
+    pub fn new() -> Self {
+        Self::with_viewport(Viewport::default())
+    }
+
+    /// Create a new ViewportSignal with a specific viewport.
+    pub fn with_viewport(initial_viewport: Viewport) -> Self {
+        let (viewport, set_viewport) = signal(initial_viewport);
+
+        let breakpoint = Memo::new({
+            let viewport = viewport.clone();
+            move |_| viewport.get().breakpoint()
+        });
+
+        let is_mobile = Memo::new({
+            let viewport = viewport.clone();
+            move |_| viewport.get().is_mobile()
+        });
+
+        let is_tablet = Memo::new({
+            let viewport = viewport.clone();
+            move |_| viewport.get().is_tablet()
+        });
+
+        let is_desktop = Memo::new({
+            let viewport = viewport.clone();
+            move |_| viewport.get().is_desktop()
+        });
+
+        let orientation = Memo::new({
+            let viewport = viewport.clone();
+            move |_| viewport.get().orientation
+        });
+
+        Self {
+            viewport,
+            set_viewport,
+            breakpoint,
+            is_mobile,
+            is_tablet,
+            is_desktop,
+            orientation,
+        }
+    }
+
+    /// Create from width and height.
+    pub fn from_dimensions(width: u32, height: u32) -> Self {
+        Self::with_viewport(Viewport::new(width, height))
+    }
+
+    /// Update the viewport dimensions.
+    pub fn update_dimensions(&self, width: u32, height: u32) {
+        let mut vp = self.viewport.get();
+        vp.update_dimensions(width, height);
+        self.set_viewport.set(vp);
+    }
+
+    /// Set a new viewport.
+    pub fn set_viewport_value(&self, viewport: Viewport) {
+        self.set_viewport.set(viewport);
+    }
+
+    /// Get responsive classes based on current viewport.
+    pub fn responsive_classes(&self) -> String {
+        self.viewport.get().responsive_classes()
+    }
+
+    /// Check if the device supports hover.
+    pub fn can_hover(&self) -> bool {
+        self.viewport.get().can_hover()
+    }
+
+    /// Check if the device has a fine pointer.
+    pub fn has_fine_pointer(&self) -> bool {
+        self.viewport.get().has_fine_pointer()
+    }
+
+    /// Get the minimum touch target size.
+    pub fn min_touch_target(&self) -> u32 {
+        self.viewport.get().min_touch_target()
+    }
+
+    /// Get the current viewport as a string for debugging.
+    pub fn debug_string(&self) -> String {
+        let vp = self.viewport.get();
+        format!(
+            "Viewport: {}x{}, {}, {:?}",
+            vp.width, vp.height, vp.breakpoint().prefix(), vp.orientation
+        )
+    }
+}
+
+#[cfg(feature = "leptos")]
+impl Default for ViewportSignal {
+    fn default() -> Self {
+        Self::new()
     }
 }
 

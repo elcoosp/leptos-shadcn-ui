@@ -10,6 +10,7 @@ repository.workspace = true
 version = "0.9.1"
 
 [dependencies]
+chrono = "0.4"
 leptos.workspace = true
 leptos-style = "0.2"
 web-sys = { version = "0.3", features = ["HtmlFormElement", "HtmlInputElement", "HtmlElement", "Element", "Node", "Event", "EventTarget", "SubmitEvent"] }

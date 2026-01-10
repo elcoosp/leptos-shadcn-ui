@@ -80,7 +80,7 @@ pub fn CardTitle(
     #[prop(into, optional)] class: MaybeProp<String>,
     #[prop(into, optional)] id: MaybeProp<String>,
     #[prop(into, optional)] style: Signal<Style>,
-    #[prop(into, optional)] level: MaybeProp<u8>,
+    #[prop(into, optional)] _level: MaybeProp<u8>,
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
     let computed_class = Signal::derive(move || {
@@ -175,8 +175,8 @@ pub fn InteractiveCard(
     #[prop(into, optional)] on_click: Option<Callback<()>>,
     #[prop(optional)] children: Option<Children>,
 ) -> impl IntoView {
-    let (is_hovered, set_is_hovered) = signal(false);
-    let (is_focused, set_is_focused) = signal(false);
+    let (_is_hovered, set_is_hovered) = signal(false);
+    let (_is_focused, set_is_focused) = signal(false);
     
     let computed_class = Signal::derive(move || {
         let base_class = CARD_CLASS;

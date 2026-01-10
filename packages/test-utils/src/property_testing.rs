@@ -138,8 +138,8 @@ pub mod assertions {
     pub fn assert_performance_within_bounds<F, V>(
         render_fn: F,
         max_time_ms: u64,
-        max_memory_kb: u64
-    ) -> bool 
+        _max_memory_kb: u64
+    ) -> bool
     where
         F: FnOnce() -> V,
         V: IntoView

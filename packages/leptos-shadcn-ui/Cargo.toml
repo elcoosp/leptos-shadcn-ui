@@ -74,6 +74,7 @@ leptos-shadcn-performance-audit = { version = "0.1.0", path = "../../performance
 leptos-shadcn-error-boundary = { version = "0.9.0", path = "../leptos/error-boundary", optional = true }
 leptos-shadcn-lazy-loading = { version = "0.9.0", path = "../leptos/lazy-loading", optional = true }
 leptos-shadcn-registry = { version = "0.9.0", path = "../leptos/registry", optional = true }
+leptos-shadcn-analytics = { version = "0.1.0", path = "../leptos/analytics", optional = true }
 
 # Additional dependencies
 tailwind_fuse = "0.3"
@@ -90,9 +91,10 @@ all-components = [
     "card", "separator", "tabs", "accordion", "dialog", "popover", "tooltip",
     "alert", "badge", "skeleton", "progress", "toast", "table", "calendar", "date-picker", "pagination",
     "slider", "toggle", "carousel",
-    "form", "combobox", "command", "input-otp", "breadcrumb", "navigation-menu", "context-menu", 
-    "dropdown-menu", "menubar", "hover-card", "aspect-ratio", "collapsible", "scroll-area", 
-    "sheet", "drawer", "alert-dialog", "avatar", "resizable", "error-boundary", "lazy-loading", "performance-audit"
+    "form", "combobox", "command", "input-otp", "breadcrumb", "navigation-menu", "context-menu",
+    "dropdown-menu", "menubar", "hover-card", "aspect-ratio", "collapsible", "scroll-area",
+    "sheet", "drawer", "alert-dialog", "avatar", "resizable", "error-boundary", "lazy-loading", "performance-audit",
+    "analytics"
 ]
 
 # Individual component features
@@ -145,6 +147,7 @@ performance-audit = ["leptos-shadcn-performance-audit"]
 error-boundary = ["leptos-shadcn-error-boundary"]
 lazy-loading = ["leptos-shadcn-lazy-loading"]
 registry = ["leptos-shadcn-registry"]
+analytics = ["leptos-shadcn-analytics"]
 
 # Modern Rust features
 modern-rust = []

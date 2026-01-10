@@ -1,6 +1,6 @@
 use leptos::{ev::MouseEvent, prelude::*};
 use leptos_node_ref::AnyNodeRef;
-use leptos_struct_component::{StructComponent, struct_component};
+use leptos_struct_component::struct_component;
 use leptos_style::Style;
 
 // Tabs Root Provider

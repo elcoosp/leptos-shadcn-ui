@@ -85,6 +85,7 @@ members = [
     "packages/leptos/error-boundary", # Error handling component
     "packages/leptos/lazy-loading",   # Lazy loading system
     "packages/leptos/registry",       # Component registry
+    "packages/leptos/analytics",      # Component usage analytics
     "packages/leptos/utils",          # Utility functions
 
     "scripts/run_quality_assessment",

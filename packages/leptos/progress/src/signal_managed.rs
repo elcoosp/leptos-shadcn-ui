@@ -93,7 +93,7 @@ pub fn SignalManagedProgress(
     // Apply lifecycle optimization
     theme_manager.apply_lifecycle_optimization();
 
-    let progress_state_for_disabled = progress_state.clone();
+    let _progress_state_for_disabled = progress_state.clone();
     view! {
         <div
             class=move || computed_class.get()

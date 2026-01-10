@@ -1,5 +1,5 @@
 //! Individual Sonner toast component
-//! 
+//!
 //! This module contains the SonnerToast component that renders
 //! individual toast notifications.
 
@@ -17,39 +17,59 @@ pub fn SonnerToast(
     let (is_visible, set_is_visible) = signal(true);
     let (progress, set_progress) = signal(data.progress.unwrap_or(0.0));
 
-    // Auto-dismiss logic
+    // Track if component is mounted for async task cleanup
+    let (is_mounted, set_is_mounted) = signal(true);
+
+    // Auto-dismiss logic with proper cleanup
     if let Some(duration) = data.duration {
         if duration.as_millis() > 0 {
             let set_is_visible = set_is_visible.clone();
             let on_dismiss = on_dismiss.clone();
-            let id = id.clone();
-            
+            let _id = id.clone();
+            let is_mounted_dismiss = is_mounted.clone();
+
             spawn_local(async move {
                 gloo_timers::future::TimeoutFuture::new(duration.as_millis() as u32).await;
-                set_is_visible.set(false);
-                // Small delay for animation
-                gloo_timers::future::TimeoutFuture::new(300).await;
-                on_dismiss.run(());
+                // Only update if component is still mounted
+                if is_mounted_dismiss.get() {
+                    set_is_visible.set(false);
+                    // Small delay for animation
+                    gloo_timers::future::TimeoutFuture::new(300).await;
+                    if is_mounted_dismiss.get() {
+                        on_dismiss.run(());
+                    }
+                }
             });
         }
     }
 
-    // Progress animation
+    // Progress animation with proper cleanup
     if data.progress.is_some() {
         let set_progress = set_progress.clone();
+        let is_mounted_progress = is_mounted.clone();
         spawn_local(async move {
             let mut current_progress = 0.0;
             let target_progress = data.progress.unwrap_or(0.0);
             let steps = 100;
             let step_size = target_progress / steps as f64;
-            
+
             for _ in 0..steps {
-                current_progress += step_size;
-                set_progress.set(current_progress.min(1.0));
-                gloo_timers::future::TimeoutFuture::new(20).await;
+                // Only update if component is still mounted
+                if is_mounted_progress.get() {
+                    current_progress += step_size;
+                    set_progress.set(current_progress.min(1.0));
+                    gloo_timers::future::TimeoutFuture::new(20).await;
+                } else {
+                    break; // Stop animation if component unmounted
+                }
             }
         });
     }
+
+    // Set flag to false on cleanup to prevent async tasks from updating state
+    on_cleanup(move || {
+        set_is_mounted.set(false);
+    });
 
     let variant_class = match data.variant {
         crate::sonner::types::ToastVariant::Default => "bg-background text-foreground border",

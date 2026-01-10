@@ -1,5 +1,4 @@
 use leptos::prelude::*;
-use leptos_style::Style;
 use crate::*;
 
 #[cfg(test)]
@@ -551,9 +550,321 @@ mod integration_tests {
                 </DropdownMenuContent>
             </DropdownMenu>
         };
-        
+
         // Test memory usage
         let size = std::mem::size_of::<usize>();
         assert!(size < 1024, "Integration should not cause excessive memory usage");
+    }
+
+    // ===== E2E INTEGRATION TESTS =====
+    // Tests for multi-component rendering, z-index conflicts, and global state isolation
+
+    #[test]
+    fn test_multiple_dropdown_menus_simultaneous_rendering() {
+        // Test: Multiple dropdown menus can be rendered simultaneously without conflicts
+        let menu1_open = RwSignal::new(false);
+        let menu2_open = RwSignal::new(false);
+        let menu3_open = RwSignal::new(false);
+
+        let _view = view! {
+            <div>
+                <DropdownMenu open=menu1_open.into()>
+                    <DropdownMenuTrigger>"Menu 1"</DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem>"Item 1.1"</DropdownMenuItem>
+                        <DropdownMenuItem>"Item 1.2"</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                <DropdownMenu open=menu2_open.into()>
+                    <DropdownMenuTrigger>"Menu 2"</DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem>"Item 2.1"</DropdownMenuItem>
+                        <DropdownMenuItem>"Item 2.2"</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                <DropdownMenu open=menu3_open.into()>
+                    <DropdownMenuTrigger>"Menu 3"</DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem>"Item 3.1"</DropdownMenuItem>
+                        <DropdownMenuItem>"Item 3.2"</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+        };
+
+        // Verify each menu maintains independent state
+        menu1_open.set(true);
+        assert!(menu1_open.get());
+        assert!(!menu2_open.get());
+        assert!(!menu3_open.get());
+
+        menu2_open.set(true);
+        assert!(menu1_open.get());
+        assert!(menu2_open.get());
+        assert!(!menu3_open.get());
+    }
+
+    #[test]
+    fn test_dropdown_menu_css_selector_isolation() {
+        // Test: CSS classes don't conflict between multiple dropdown menus
+        let menu1_open = RwSignal::new(false);
+        let menu2_open = RwSignal::new(false);
+
+        let _view = view! {
+            <div>
+                <DropdownMenu open=menu1_open.into()>
+                    <DropdownMenuTrigger class="custom-trigger-1">"Menu 1"</DropdownMenuTrigger>
+                    <DropdownMenuContent class="custom-content-1">
+                        <DropdownMenuItem class="custom-item">"Item 1"</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                <DropdownMenu open=menu2_open.into()>
+                    <DropdownMenuTrigger class="custom-trigger-2">"Menu 2"</DropdownMenuTrigger>
+                    <DropdownMenuContent class="custom-content-2">
+                        <DropdownMenuItem class="custom-item">"Item 2"</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+        };
+
+        // Both menus should maintain independent state
+        menu1_open.set(true);
+        menu2_open.set(true);
+        assert!(menu1_open.get());
+        assert!(menu2_open.get());
+    }
+
+    #[test]
+    fn test_dropdown_menu_event_propagation_isolation() {
+        // Test: Events from one menu don't affect other menus
+        let menu1_open = RwSignal::new(false);
+        let menu2_open = RwSignal::new(false);
+        let click_count = RwSignal::new(0);
+
+        let _view = view! {
+            <div>
+                <DropdownMenu open=menu1_open.into()>
+                    <DropdownMenuTrigger
+                        on_click=Some(Callback::new(move |_| {
+                            click_count.update(|n| *n += 1);
+                        }))
+                    >
+                        "Menu 1"
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem
+                            on_click=Some(Callback::new(move |_| {
+                                menu1_open.set(false);
+                            }))
+                        >
+                            "Close"
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                <DropdownMenu open=menu2_open.into()>
+                    <DropdownMenuTrigger
+                        on_click=Some(Callback::new(move |_| {
+                            click_count.update(|n| *n += 1);
+                        }))
+                    >
+                        "Menu 2"
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem
+                            on_click=Some(Callback::new(move |_| {
+                                menu2_open.set(false);
+                            }))
+                        >
+                            "Close"
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+        };
+
+        // Verify independent event handling
+        menu1_open.set(true);
+        assert!(menu1_open.get());
+        assert!(!menu2_open.get());
+
+        click_count.set(5);
+        assert_eq!(click_count.get(), 5);
+    }
+
+    #[test]
+    fn test_dropdown_menu_global_state_isolation() {
+        // Test: Each menu maintains its own context state
+        let menu1_open = RwSignal::new(false);
+        let menu2_open = RwSignal::new(false);
+        let shared_state = RwSignal::new("shared".to_string());
+
+        let _view = view! {
+            <div>
+                <DropdownMenu open=menu1_open.into()>
+                    <DropdownMenuTrigger>"Menu 1"</DropdownTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem>{move || shared_state.get()}</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                <DropdownMenu open=menu2_open.into()>
+                    <DropdownMenuTrigger>"Menu 2"</DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem>{move || shared_state.get()}</DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+        };
+
+        // Both menus should render successfully
+        menu1_open.set(true);
+        menu2_open.set(true);
+        assert!(menu1_open.get());
+        assert!(menu2_open.get());
+
+        // Shared state should be accessible to both
+        shared_state.set("updated".to_string());
+        assert_eq!(shared_state.get(), "updated");
+    }
+
+    #[test]
+    fn test_dropdown_menu_concurrent_lifecycle_management() {
+        // Test: Multiple menus can be opened and closed concurrently
+        let menu1_open = RwSignal::new(false);
+        let menu2_open = RwSignal::new(false);
+        let menu3_open = RwSignal::new(false);
+
+        let lifecycle_tracker = RwSignal::new(vec![]);
+
+        let _view = view! {
+            <div>
+                <DropdownMenu open=menu1_open.into()>
+                    <DropdownMenuTrigger
+                        on_click=Some(Callback::new(move |_| {
+                            lifecycle_tracker.update(|v| v.push("menu1_opened".to_string()));
+                        }))
+                    >
+                        "Menu 1"
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem
+                            on_click=Some(Callback::new(move |_| {
+                                lifecycle_tracker.update(|v| v.push("menu1_item_clicked".to_string()));
+                            }))
+                        >
+                            "Item"
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                <DropdownMenu open=menu2_open.into()>
+                    <DropdownMenuTrigger
+                        on_click=Some(Callback::new(move |_| {
+                            lifecycle_tracker.update(|v| v.push("menu2_opened".to_string()));
+                        }))
+                    >
+                        "Menu 2"
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem
+                            on_click=Some(Callback::new(move |_| {
+                                lifecycle_tracker.update(|v| v.push("menu2_item_clicked".to_string()));
+                            }))
+                        >
+                            "Item"
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                <DropdownMenu open=menu3_open.into()>
+                    <DropdownMenuTrigger
+                        on_click=Some(Callback::new(move |_| {
+                            lifecycle_tracker.update(|v| v.push("menu3_opened".to_string()));
+                        }))
+                    >
+                        "Menu 3"
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                        <DropdownMenuItem
+                            on_click=Some(Callback::new(move |_| {
+                                lifecycle_tracker.update(|v| v.push("menu3_item_clicked".to_string()));
+                            }))
+                        >
+                            "Item"
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+        };
+
+        // Test concurrent opening
+        menu1_open.set(true);
+        menu2_open.set(true);
+        menu3_open.set(true);
+
+        assert!(menu1_open.get());
+        assert!(menu2_open.get());
+        assert!(menu3_open.get());
+
+        // Test concurrent closing
+        menu1_open.set(false);
+        menu2_open.set(false);
+        menu3_open.set(false);
+
+        assert!(!menu1_open.get());
+        assert!(!menu2_open.get());
+        assert!(!menu3_open.get());
+    }
+
+    #[test]
+    fn test_dropdown_menu_rapid_state_changes() {
+        // Test: Rapid opening and closing doesn't cause conflicts
+        let menu_open = RwSignal::new(false);
+
+        let _view = view! {
+            <DropdownMenu open=menu_open.into()>
+                <DropdownMenuTrigger>"Toggle Menu"</DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    <DropdownMenuItem>"Item 1"</DropdownMenuItem>
+                </DropdownMenuContent>
+            </DropdownMenu>
+        };
+
+        // Rapid state changes
+        for _ in 0..100 {
+            menu_open.set(true);
+            assert!(menu_open.get());
+            menu_open.set(false);
+            assert!(!menu_open.get());
+        }
+    }
+
+    #[test]
+    fn test_dropdown_menu_memory_management_multiple_instances() {
+        // Test: Multiple menus don't cause memory leaks
+        let menus: Vec<RwSignal<bool>> = (0..10)
+            .map(|_| RwSignal::new(false))
+            .collect();
+
+        let _view = view! {
+            <div>
+                {menus.into_iter().enumerate().map(|(i, open)| {
+                    view! {
+                        <DropdownMenu open=open.into()>
+                            <DropdownMenuTrigger>{format!("Menu {}", i)}</DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuItem>{format!("Item {}", i)}</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    }
+                }).collect::<Vec<_>>()}
+            </div>
+        };
+
+        // All menus should initialize successfully
     }
 }

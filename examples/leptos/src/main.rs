@@ -1,4 +1,5 @@
 mod comprehensive_demo;
+mod component_browser;
 
 use leptos::prelude::*;
 use leptos_meta::*;

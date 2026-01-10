@@ -93,7 +93,7 @@ pub fn SignalManagedSheet(
     // Apply lifecycle optimization
     theme_manager.apply_lifecycle_optimization();
 
-    let sheet_state_for_disabled = sheet_state.clone();
+    let _sheet_state_for_disabled = sheet_state.clone();
     view! {
         <div
             class=move || computed_class.get()

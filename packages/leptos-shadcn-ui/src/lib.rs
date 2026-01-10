@@ -117,6 +117,8 @@ pub use leptos_shadcn_lazy_loading::*;
 pub use leptos_shadcn_error_boundary::*;
 #[cfg(feature = "registry")]
 pub use leptos_shadcn_registry::*;
+#[cfg(feature = "analytics")]
+pub use leptos_shadcn_analytics::*;
 
 // Re-export common types and utilities
 pub use tailwind_fuse::tw_merge;

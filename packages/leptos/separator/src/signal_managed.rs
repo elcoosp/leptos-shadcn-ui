@@ -93,7 +93,7 @@ pub fn SignalManagedSeparator(
     // Apply lifecycle optimization
     theme_manager.apply_lifecycle_optimization();
 
-    let separator_state_for_disabled = separator_state.clone();
+    let _separator_state_for_disabled = separator_state.clone();
     view! {
         <div
             class=move || computed_class.get()

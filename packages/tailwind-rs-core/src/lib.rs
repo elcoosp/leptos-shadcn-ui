@@ -71,6 +71,8 @@ pub use validation::*;
 // Re-export specific items to avoid conflicts
 pub use colors::utils as color_utils;
 pub use responsive::utils as responsive_utils;
+pub use responsive::media_queries;
+pub use responsive::patterns;
 
 // Re-export macros (when available)
 // #[cfg(feature = "macros")]

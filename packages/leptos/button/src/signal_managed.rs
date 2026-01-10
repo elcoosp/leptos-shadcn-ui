@@ -51,7 +51,7 @@ pub fn SignalManagedButton(
     #[prop(into, optional)] id: MaybeProp<String>,
     #[prop(into, optional)] style: Signal<Style>,
     #[prop(into, optional)] as_child: Option<Callback<SignalManagedButtonChildProps, AnyView>>,
-    #[prop(optional)] children: Option<Children>,
+    #[prop(optional)] _children: Option<Children>,
 ) -> impl IntoView {
     // Create persistent button state using ArcRwSignal
     let button_state = ArcRwSignal::new(SignalManagedButtonState {
@@ -188,7 +188,7 @@ pub fn EnhancedButton(
     #[prop(into, optional)] class: MaybeProp<String>,
     #[prop(into, optional)] id: MaybeProp<String>,
     #[prop(into, optional)] style: Signal<Style>,
-    #[prop(optional)] children: Option<Children>,
+    #[prop(optional)] _children: Option<Children>,
 ) -> impl IntoView {
     // Create persistent button state using ArcRwSignal
     let button_state = ArcRwSignal::new(SignalManagedButtonState {

@@ -18,11 +18,23 @@ component-name.md
 └── Examples & Usage
 ```
 
+## Theme System
+
+The library supports multiple design system themes:
+
+- **[Theme Differences](THEME_DIFFERENCES.md)** - Comprehensive comparison between Default and New York themes
+- [Theme Architecture](../architecture/README.md) - Technical implementation details
+
+### Theme Variants
+
+- **Default Theme**: The original shadcn/ui design system with comprehensive features
+- **New York Theme**: A simplified variant with minimal styling and some enhanced components
+
 ## Component Categories
 
 ### Core Components (Priority 1)
 - [Button](button.md) - Primary interaction element
-- [Input](input.md) - Form input with validation  
+- [Input](input.md) - Form input with validation
 - [Label](label.md) - Accessible form labels
 - [Card](card.md) - Content container
 - [Badge](badge.md) - Status indicators

@@ -133,15 +133,34 @@ pub fn Combobox(
         set_is_open.set(false);
     };
     
-    // Handle focus/blur
+    // Handle focus/blur with proper cleanup
+    // Use a guard flag to prevent timeout from executing after component unmount
+    let (is_mounted, set_is_mounted) = signal(true);
+    let set_is_open_for_timeout = set_is_open.clone();
+
     let handle_focus = move |_: FocusEvent| {
         set_is_open.set(true);
     };
-    
+
     let handle_blur = move |_: FocusEvent| {
         // Delay closing to allow for option clicks
-        set_timeout(move || set_is_open.set(false), std::time::Duration::from_millis(150));
+        let is_mounted = is_mounted.clone();
+        let set_is_open = set_is_open_for_timeout.clone();
+        set_timeout(
+            move || {
+                // Only execute if component is still mounted
+                if is_mounted.get() {
+                    set_is_open.set(false);
+                }
+            },
+            std::time::Duration::from_millis(150)
+        );
     };
+
+    // Set flag to false on cleanup to prevent timeout execution
+    on_cleanup(move || {
+        set_is_mounted.set(false);
+    });
     
     // Compute classes
     let computed_class = Signal::derive(move || {

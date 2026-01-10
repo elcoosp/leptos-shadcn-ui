@@ -1,8 +1,188 @@
 //! Enhanced lazy loading component with realistic simulation and favorites
+//!
+//! This example demonstrates code-splitting with Leptos's `#[lazy]` macro.
+//! Each component below is compiled into a separate WASM chunk that is loaded
+//! on-demand when first accessed. You can verify this by:
+//! 1. Building the example with `cargo leptos build --split`
+//! 2. Checking the browser's Network tab when clicking "Load" buttons
+//! 3. Observing separate `.wasm` chunk files being loaded on-demand
 
 use leptos::*;
 use leptos::prelude::*;
 use leptos::task::spawn_local;
+use leptos_shadcn_lazy_loading::{
+    lazy_button_component, lazy_card_component, lazy_input_component,
+    lazy_alert_component, lazy_form_component,
+};
+
+/// Component metadata for enhanced lazy loading
+#[derive(Clone)]
+struct ComponentInfo {
+    name: String,
+    category: String,
+    estimated_size: String,
+    dependencies: Vec<String>,
+    description: String,
+}
+
+/// Lazy code-split component wrapper
+/// This component demonstrates code-splitting using Leptos's #[lazy] macro
+/// Each component is loaded from a separate WASM chunk on-demand
+#[component]
+pub fn LazyCodeSplitComponent(
+    #[prop(into)] name: String,
+    component_type: String,
+) -> impl IntoView {
+    let (is_loaded, set_is_loaded) = signal(false);
+    let (is_loading, set_is_loading) = signal(false);
+    let (load_progress, set_load_progress) = signal(0.0);
+    let (component_view, set_component_view) = signal(None::<View<()>>);
+    let (error, set_error) = signal(None::<String>);
+
+    // Clone values for use in closures
+    let component_type_clone = component_type.clone();
+    let name_clone = name.clone();
+
+    let load_component = move |_| {
+        let component_type = component_type_clone.clone();
+        let name = name_clone.clone();
+        let set_is_loading = set_is_loading.clone();
+        let set_is_loaded = set_is_loaded.clone();
+        let set_component_view = set_component_view.clone();
+        let set_error = set_error.clone();
+        let set_load_progress = set_load_progress.clone();
+        let (is_mounted, set_is_mounted) = signal(true);
+
+        set_is_loading.set(true);
+        set_load_progress.set(0.0);
+
+        // Track if component is still mounted for interval cleanup
+        let is_mounted_interval = is_mounted.clone();
+        let set_is_loading_interval = set_is_loading.clone();
+        let set_is_loaded_interval = set_is_loaded.clone();
+        let set_load_progress_interval = set_load_progress.clone();
+
+        // Simulate loading progress
+        let progress_interval = set_interval_with_handle(
+            move || {
+                if is_mounted_interval.get() {
+                    set_load_progress_interval.update(|p| {
+                        if *p < 100.0 {
+                            *p += 10.0;
+                        }
+                    });
+                }
+            },
+            std::time::Duration::from_millis(50),
+        ).unwrap();
+
+        // Spawn async task to load the lazy component
+        spawn_local(async move {
+            // Load the appropriate lazy component based on type
+            let result = match component_type.as_str() {
+                "button" => lazy_button_component().await,
+                "card" => lazy_card_component().await,
+                "input" => lazy_input_component().await,
+                "alert" => lazy_alert_component().await,
+                "form" => lazy_form_component().await,
+                _ => Err(format!("Unknown component type: {}", component_type)),
+            };
+
+            // Clear the progress interval
+            let _ = progress_interval.clear();
+
+            // Only update if component is still mounted
+            if is_mounted.get() {
+                set_is_loading.set(false);
+                set_load_progress.set(100.0);
+
+                match result {
+                    Ok(view) => {
+                        set_component_view.set(Some(view));
+                        set_is_loaded.set(true);
+                    }
+                    Err(err) => {
+                        set_error.set(Some(err));
+                    }
+                }
+            }
+        });
+
+        // Set up cleanup for interval when component unmounts
+        let progress_interval_for_cleanup = progress_interval;
+        on_cleanup(move || {
+            set_is_mounted.set(false);
+            progress_interval_for_cleanup.clear();
+        });
+    };
+
+    view! {
+        <div class="lazy-code-split-component">
+            <div class="component-header">
+                <h4>{name_clone}</h4>
+                <span class="component-type-badge">{component_type_clone}</span>
+            </div>
+
+            <div class="component-content">
+                <div class="lazy-component-loaded" class:hidden={move || !is_loaded.get()}>
+                    <div class="component-success">
+                        <div class="success-icon">"✅"</div>
+                        <p class="success-text">
+                            "Code-split component loaded from separate WASM chunk!"
+                        </p>
+                        <div class="component-demo">
+                            {move || component_view.get()}
+                        </div>
+                        <div class="chunk-info">
+                            <p class="chunk-text">
+                                "Check browser Network tab to see the chunk file that was loaded"
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="component-loading" class:hidden={move || !is_loading.get()}>
+                    <div class="loading-content">
+                        <div class="loading-spinner"></div>
+                        <p>"Loading {name_clone} from WASM chunk..."</p>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style={move || format!("width: {}%", load_progress.get())}></div>
+                        </div>
+                        <span class="progress-text">{move || format!("{}%", load_progress.get() as i32)}</span>
+                    </div>
+                </div>
+
+                <div class="component-error" class:hidden={move || error.get().is_none()}>
+                    <div class="error-content">
+                        <div class="error-icon">"❌"</div>
+                        <p class="error-text">
+                            {move || error.get().unwrap_or_else(|| "Unknown error".to_string())}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="component-placeholder" class:hidden={move || is_loaded.get() || is_loading.get()}>
+                    <div class="placeholder-content">
+                        <p class="placeholder-text">
+                            "This component will be loaded from a separate WASM chunk on-demand."
+                        </p>
+                        <div class="placeholder-info">
+                            <p>"Click the button below to trigger code-splitting"</p>
+                            <ul class="chunk-list">
+                                <li>"Separate .wasm chunk file"</li>
+                                <li>"Loaded only when needed"</li>
+                                <li>"Reduces initial bundle size"</li>
+                            </ul>
+                        </div>
+                        <button on:click={load_component} class="load-btn">
+                            "Load {name_clone}"
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
 
 /// Component metadata for enhanced lazy loading
 #[derive(Clone)]
@@ -309,26 +489,37 @@ pub fn LazyComponentWrapper(
     let load_component = move |_| {
         set_is_loading.set(true);
         set_load_progress.set(0.0);
-        
+
+        // Track if component is still mounted for interval cleanup
+        let (is_mounted, set_is_mounted) = signal(true);
+        let set_is_loading_interval = set_is_loading.clone();
+        let set_is_loaded_interval = set_is_loaded.clone();
+        let set_load_progress_interval = set_load_progress.clone();
+        let is_mounted_interval = is_mounted.clone();
+
         // Simulate loading progress
         let progress_interval = set_interval_with_handle(
             move || {
-                set_load_progress.update(|p| {
-                    if *p < 100.0 {
-                        *p += 10.0;
-                    } else {
-                        set_is_loading.set(false);
-                        set_is_loaded.set(true);
-                    }
-                });
+                // Only update if component is still mounted
+                if is_mounted_interval.get() {
+                    set_load_progress_interval.update(|p| {
+                        if *p < 100.0 {
+                            *p += 10.0;
+                        } else {
+                            set_is_loading_interval.set(false);
+                            set_is_loaded_interval.set(true);
+                        }
+                    });
+                }
             },
             std::time::Duration::from_millis(100),
         ).unwrap();
-        
-        // Clean up interval after loading
-        spawn_local(async move {
-            gloo_timers::future::TimeoutFuture::new(1000).await;
-            progress_interval.clear();
+
+        // Set up cleanup for interval when component unmounts
+        let progress_interval_for_cleanup = progress_interval.clone();
+        on_cleanup(move || {
+            set_is_mounted.set(false);
+            progress_interval_for_cleanup.clear();
         });
     };
 
@@ -408,13 +599,63 @@ pub fn LazyComponentWrapper(
     }
 }
 
-/// Simple lazy loading provider
+/// Simple lazy loading provider with code-splitting demonstration
 #[component]
 pub fn LazyLoadingProvider(
     #[prop(into)] children: Children,
 ) -> impl IntoView {
     view! {
         <div class="lazy-loading-provider">
+            // Code-Splitting Demo Section
+            <div class="code-splitting-demo">
+                <div class="demo-header">
+                    <h2>"Code-Splitting Demo"</h2>
+                    <p class="demo-description">
+                        "This section demonstrates component-level code splitting using Leptos's #[lazy] macro. "
+                        "Each component below is compiled into a separate WASM chunk that is loaded on-demand."
+                    </p>
+                    <div class="demo-instructions">
+                        <h3>"How to Verify Code Splitting:"</h3>
+                        <ol>
+                            <li>"Open your browser's Developer Tools (F12)"</li>
+                            <li>"Go to the Network tab"</li>
+                            <li>"Filter by '.wasm' files"</li>
+                            <li>"Click the 'Load' button on any component below"</li>
+                            <li>"Observe a new .wasm chunk file being loaded"</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="demo-components">
+                    <div class="demo-section">
+                        <h3>"Code-Split Components"</h3>
+                        <div class="component-grid">
+                            <LazyCodeSplitComponent
+                                name="Button Component"
+                                component_type="button".to_string()
+                            />
+                            <LazyCodeSplitComponent
+                                name="Card Component"
+                                component_type="card".to_string()
+                            />
+                            <LazyCodeSplitComponent
+                                name="Input Component"
+                                component_type="input".to_string()
+                            />
+                            <LazyCodeSplitComponent
+                                name="Alert Component"
+                                component_type="alert".to_string()
+                            />
+                            <LazyCodeSplitComponent
+                                name="Form Component"
+                                component_type="form".to_string()
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            // Original children
             {children()}
         </div>
     }

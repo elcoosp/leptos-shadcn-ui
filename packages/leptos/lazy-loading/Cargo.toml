@@ -11,6 +11,7 @@ version.workspace = true
 
 [dependencies]
 leptos.workspace = true
+leptos-shadcn-error-boundary.workspace = true
 
 [dev-dependencies]
 leptos = { workspace = true, features = ["csr"] }

@@ -93,7 +93,7 @@ pub fn SignalManagedAvatar(
     // Apply lifecycle optimization
     theme_manager.apply_lifecycle_optimization();
 
-    let avatar_state_for_disabled = avatar_state.clone();
+    let _avatar_state_for_disabled = avatar_state.clone();
     view! {
         <div
             class=move || computed_class.get()

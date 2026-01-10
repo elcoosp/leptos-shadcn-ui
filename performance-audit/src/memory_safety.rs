@@ -104,7 +104,7 @@ pub struct MemorySafetyTester {
     /// Test results cache
     results: HashMap<String, MemorySafetyResult>,
     /// Memory monitoring data
-    memory_snapshots: Vec<MemorySnapshot>,
+    _memory_snapshots: Vec<MemorySnapshot>,
 }
 
 /// Memory snapshot for monitoring

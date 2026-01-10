@@ -1,13 +1,12 @@
 //! Leptos v0.8 compatibility tests for the Input component
-//! 
+//!
 //! This module contains tests for Leptos v0.8 attribute system compatibility,
 //! attribute types, signal handling, and reserved keyword attributes.
 
-use leptos::prelude::*;
-use crate::default::Input;
-
 #[cfg(test)]
 mod tests {
+    use leptos::prelude::*;
+    use crate::default::Input;
     use super::*;
 
     /// Test that verifies Leptos v0.8 attribute system compatibility

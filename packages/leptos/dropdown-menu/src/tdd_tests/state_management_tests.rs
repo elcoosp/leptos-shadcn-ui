@@ -1,5 +1,4 @@
 use leptos::prelude::*;
-use leptos_style::Style;
 use crate::*;
 
 #[cfg(test)]
