@@ -18,12 +18,13 @@ Deep dive into the technical design:
 - [Coverage Analysis](./architecture/coverage/) - Test coverage documentation
 - [Performance Analysis](./architecture/performance/) - Performance benchmarks and optimization
 
-### 🧩 [Components](./components/README.md)
+### 🧩 [Components](./components/)
 Component library reference:
 - [API Reference](./components/api-reference/)
 - [Examples](./components/examples/)
 - [Accessibility Guide](./components/accessibility/)
 - [Theming Guide](./components/theming/)
+- [Mobile Design Guidelines](./components/mobile-design-guidelines.md) - Responsive design patterns and best practices
 
 ### 🎓 [Tutorials](./tutorials/README.md)
 Step-by-step video and written tutorials:
