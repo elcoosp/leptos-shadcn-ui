@@ -100,6 +100,12 @@ overflow-checks = false
 incremental = false
 
 # =============================================================================
+# Compiler Warnings Configuration
+# =============================================================================
+# Treat compiler warnings as errors in CI to prevent warnings in the codebase
+# Set RUSTFLAGS="-D warnings" in CI to enable
+
+# =============================================================================
 # Test Coverage Configuration
 # =============================================================================
 # These settings enable automated test coverage reporting

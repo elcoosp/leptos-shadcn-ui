@@ -12,6 +12,9 @@ concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
     cancel-in-progress: false
 
+env:
+    RUSTFLAGS: "-D warnings"
+
 jobs:
     book-test:
         name: Test Book
