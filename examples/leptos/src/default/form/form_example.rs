@@ -37,11 +37,11 @@ pub fn FormExample() -> impl IntoView {
             }
         }
         
-        set_errors.set(new_errors);
-        
-        if errors.get().is_empty() {
+        if new_errors.is_empty() {
             log::info!("Form submitted successfully!");
         }
+
+        set_errors.set(new_errors);
     });
     
     let get_error = move |field: &str| {
