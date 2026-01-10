@@ -18,6 +18,9 @@ on:
       - 'tests/radio_group_integration_test.rs'
       - 'scripts/test_radio_group.sh'
 
+env:
+  RUSTFLAGS: "-D warnings"
+
 jobs:
   test-radio-group:
     name: RadioGroup Component Tests

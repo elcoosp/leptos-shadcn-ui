@@ -38,6 +38,7 @@ on:
 env:
   NODE_VERSION: '20'
   RUST_VERSION: 'stable'
+  RUSTFLAGS: "-D warnings"
 
 jobs:
   cross-browser-tests:

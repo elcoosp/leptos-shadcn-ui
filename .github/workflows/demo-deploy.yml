@@ -21,6 +21,7 @@ env:
   RUST_VERSION: 'stable'
   NODE_VERSION: '18'
   WASM_PACK_VERSION: '0.12.1'
+  RUSTFLAGS: "-D warnings"
 
 jobs:
   # Job 1: Build and Test the Demo
