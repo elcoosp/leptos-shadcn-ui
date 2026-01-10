@@ -17,6 +17,10 @@ Deep dive into the technical design:
 - [Migration Guides](./architecture/migration-guides/) - Version upgrade guides
 - [Coverage Analysis](./architecture/coverage/) - Test coverage documentation
 - [Performance Analysis](./architecture/performance/) - Performance benchmarks and optimization
+- [Performance Optimization Guide](./PERFORMANCE_OPTIMIZATION_GUIDE.md) - Comprehensive optimization strategies
+- [Profiling Quick Reference](./PROFILING_QUICK_REFERENCE.md) - Fast profiling techniques
+- [Optimization Patterns Cookbook](./OPTIMIZATION_PATTERNS_COOKBOOK.md) - Real-world optimization patterns
+- [Measurement & Benchmarking Guide](./MEASUREMENT_AND_BENCHMARKING_GUIDE.md) - Performance measurement techniques
 
 ### 🧩 [Components](./components/)
 Component library reference:
@@ -74,11 +78,13 @@ How to contribute to the project:
 1. Review [Architecture Overview](./architecture/README.md)
 2. Check [Testing Guidelines](./testing/README.md)
 3. Follow [Contributing Guidelines](./contributing/README.md)
+4. Explore [Performance Optimization Guide](./PERFORMANCE_OPTIMIZATION_GUIDE.md) for best practices
 
 ### For Maintainers
 1. Understand [Release Process](./releases/README.md)
 2. Review [Roadmap](./roadmap/README.md)
 3. Check [Performance Benchmarks](./architecture/performance/)
+4. Review [Measurement & Benchmarking Guide](./MEASUREMENT_AND_BENCHMARKING_GUIDE.md) for continuous monitoring
 
 ## 🔗 External Resources
 
