@@ -84,7 +84,6 @@ export class AccessibilityAutomation {
    */
   async runAccessibilityAudit(page: Page, componentName: string): Promise<AccessibilityAuditResult> {
     const violations: AccessibilityViolation[] = [];
-    const recommendations: string[] = [];
 
     // Run WCAG compliance tests
     violations.push(...await this.runWCAGComplianceTests(page, componentName));
