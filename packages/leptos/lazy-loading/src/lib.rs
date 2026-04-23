@@ -394,8 +394,3 @@ mod tests {
 // =============================================================================
 
 // Export the code-split lazy component functions for use in examples
-pub use lazy_button_component;
-pub use lazy_card_component;
-pub use lazy_input_component;
-pub use lazy_alert_component;
-pub use lazy_form_component;
