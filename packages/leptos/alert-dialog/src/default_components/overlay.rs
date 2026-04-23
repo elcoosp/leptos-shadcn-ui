@@ -12,7 +12,7 @@ pub fn AlertDialogOverlay(
     #[prop(into, optional)] class: MaybeProp<String>,
     #[prop(into, optional)] id: MaybeProp<String>,
     #[prop(into, optional)] style: MaybeProp<String>,
-    #[prop(optional)] children: Option<Children>,
+children: Children,
 ) -> impl IntoView {
     let open = expect_context::<RwSignal<bool>>();
     let on_open_change = expect_context::<Option<Callback<bool>>>();
@@ -35,7 +35,7 @@ pub fn AlertDialogOverlay(
                 style=move || style.get().unwrap_or_default()
                 on:click=handle_click
             >
-                {children.map(|c| c())}
+{children()}
             </div>
         </Show>
     }

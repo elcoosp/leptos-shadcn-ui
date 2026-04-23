@@ -23,16 +23,16 @@ pub fn DataTable(
     let state = RwSignal::new(DataTableState::default());
     
     // Initialize state with props
-    if let Some(data) = data {
+if let Some(data) = data.get() {
         state.update(|s| s.data = data);
     }
-    if let Some(columns) = columns {
+if let Some(cols) = columns.get() {
         state.update(|s| s.columns = columns);
     }
-    if let Some(loading) = loading {
+if let Some(ld) = loading.get() {
         state.update(|s| s.loading = loading);
     }
-    if let Some(error) = error {
+if let Some(err) = error.get() {
         state.update(|s| s.error = error);
     }
 

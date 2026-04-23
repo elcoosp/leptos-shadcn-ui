@@ -12,7 +12,7 @@ pub fn DrawerContent(
     #[prop(into, optional)] class: MaybeProp<String>,
     #[prop(into, optional)] id: MaybeProp<String>,
     #[prop(into, optional)] style: MaybeProp<String>,
-    #[prop(optional)] children: Option<Children>,
+children: Children,
 ) -> impl IntoView {
     let open_state = expect_context::<RwSignal<bool>>();
     let direction = expect_context::<Signal<DrawerDirection>>();
@@ -46,7 +46,7 @@ pub fn DrawerContent(
                 role="dialog"
                 aria-modal="true"
             >
-                {children.map(|c| c())}
+{children()}
             </div>
         </Show>
     }

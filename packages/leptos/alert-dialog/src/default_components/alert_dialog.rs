@@ -11,7 +11,7 @@ use wasm_bindgen::JsCast;
 pub fn AlertDialog(
     #[prop(into)] open: RwSignal<bool>,
     #[prop(into, optional)] on_open_change: Option<Callback<bool>>,
-    #[prop(optional)] children: Option<Children>,
+children: Children,
 ) -> impl IntoView {
     provide_context(open);
     provide_context(on_open_change);
@@ -25,7 +25,7 @@ pub fn AlertDialog(
             fallback=|| view! { <div></div> }
         >
             <div>
-                {children.map(|c| c())}
+{children()}
             </div>
         </Show>
     }
