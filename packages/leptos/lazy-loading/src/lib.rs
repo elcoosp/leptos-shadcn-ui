@@ -69,18 +69,18 @@ fn prevent_default(e: SubmitEvent) {
     e.prevent_default();
 }
 
-#[lazy]
+// #[lazy]
 async fn lazy_button_component() -> Result<View<()>, String> {
     Ok(view! {
         <div class="lazy-demo-component">
             <button class="lazy-demo-button">"Lazy Loaded Button"</button>
         </div>
     }
-    .into_any()
-    .into())
+    
+    )
 }
 
-#[lazy]
+// #[lazy]
 async fn lazy_card_component() -> Result<View<()>, String> {
     Ok(view! {
         <div class="lazy-demo-card">
@@ -88,11 +88,11 @@ async fn lazy_card_component() -> Result<View<()>, String> {
             <p>"This card was loaded on-demand from a separate WASM chunk."</p>
         </div>
     }
-    .into_any()
-    .into())
+    
+    )
 }
 
-#[lazy]
+// #[lazy]
 async fn lazy_input_component() -> Result<View<()>, String> {
     Ok(view! {
         <div class="lazy-demo-input">
@@ -100,11 +100,11 @@ async fn lazy_input_component() -> Result<View<()>, String> {
             <p>"This input component was loaded from its own chunk."</p>
         </div>
     }
-    .into_any()
-    .into())
+    
+    )
 }
 
-#[lazy]
+// #[lazy]
 async fn lazy_alert_component() -> Result<View<()>, String> {
     Ok(view! {
         <div class="lazy-demo-alert">
@@ -114,11 +114,11 @@ async fn lazy_alert_component() -> Result<View<()>, String> {
             </div>
         </div>
     }
-    .into_any()
-    .into())
+    
+    )
 }
 
-#[lazy]
+// #[lazy]
 async fn lazy_form_component() -> Result<View<()>, String> {
     Ok(view! {
         <div class="lazy-demo-form">
@@ -137,8 +137,8 @@ async fn lazy_form_component() -> Result<View<()>, String> {
             <p>"This form component demonstrates lazy loading of larger components."</p>
         </div>
     }
-    .into_any()
-    .into())
+    
+    )
 }
 
 // =============================================================================
@@ -192,10 +192,10 @@ pub fn LazyComponent(
                         <div class="loading-spinner"></div>
                         <p>"Loading component..."</p>
                     </div>
-                }.into_any()
+                }
             }
         } else if let Some(Ok(comp)) = component.get() {
-            comp.into_any()
+            comp
         } else if let Some(err) = error.get() {
             if let Some(error_fn) = &error_fallback {
                 error_fn(err)
@@ -213,10 +213,10 @@ pub fn LazyComponent(
                         <p class="error-message">{error_context.message}</p>
                         <button class="error-retry" on:click=retry_loading>"Retry"</button>
                     </div>
-                }.into_any()
+                }
             }
         } else {
-            view! { <div></div> }.into_any()
+            view! { <div></div> }
         }
     }
 }
