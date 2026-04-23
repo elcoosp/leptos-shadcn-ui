@@ -59,6 +59,7 @@ pub mod bundle_analysis;
 pub mod performance_monitoring;
 pub mod optimization_roadmap;
 pub mod benchmarks;
+#[cfg(not(target_arch = "wasm32"))]
 pub mod memory_safety;
 pub mod regression_testing;
 #[cfg(not(target_arch = "wasm32"))]
