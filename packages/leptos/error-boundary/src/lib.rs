@@ -99,7 +99,7 @@ pub fn RichErrorFallback(
     #[prop(into)] error_context: ErrorContext,
     #[prop(into, optional)] show_technical: MaybeProp<bool>,
 ) -> impl IntoView {
-    let show_details = signal(show_technical.get().unwrap_or(false));
+    let (show_details, set_show_details) = signal(show_technical.get().unwrap_or(false));
 
     let severity_class = move || match error_context.severity {
         ErrorSeverity::Info => "info",
