@@ -76,7 +76,8 @@ async fn lazy_button_component() -> Result<View<()>, String> {
             <button class="lazy-demo-button">"Lazy Loaded Button"</button>
         </div>
     }
-    .into_view())
+    .into_any()
+    .into())
 }
 
 #[lazy]
@@ -87,7 +88,8 @@ async fn lazy_card_component() -> Result<View<()>, String> {
             <p>"This card was loaded on-demand from a separate WASM chunk."</p>
         </div>
     }
-    .into_view())
+    .into_any()
+    .into())
 }
 
 #[lazy]
@@ -98,7 +100,8 @@ async fn lazy_input_component() -> Result<View<()>, String> {
             <p>"This input component was loaded from its own chunk."</p>
         </div>
     }
-    .into_view())
+    .into_any()
+    .into())
 }
 
 #[lazy]
@@ -111,7 +114,8 @@ async fn lazy_alert_component() -> Result<View<()>, String> {
             </div>
         </div>
     }
-    .into_view())
+    .into_any()
+    .into())
 }
 
 #[lazy]
@@ -133,7 +137,8 @@ async fn lazy_form_component() -> Result<View<()>, String> {
             <p>"This form component demonstrates lazy loading of larger components."</p>
         </div>
     }
-    .into_view())
+    .into_any()
+    .into())
 }
 
 // =============================================================================
