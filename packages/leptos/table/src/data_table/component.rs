@@ -3,7 +3,6 @@ use leptos_style::Style;
 use std::collections::HashMap;
 use super::types::*;
 
-/// Main DataTable component
 #[component]
 pub fn DataTable(
     #[prop(into, optional)] class: MaybeProp<String>,
@@ -140,12 +139,12 @@ pub fn DataTable(
                     } else if let Some(err) = &ss.error {
                         view! { <div class="data-table-error">{err.clone()}</div> }.into_any()
                     } else {
-                        let cols = ss.columns.clone(); // clone to own the data
+                        let cols = ss.columns.clone(); // owned copy
                         view! {
                             <table class="data-table-table">
                                 <thead>
                                     <tr>
-                                        {cols.iter().map(|col| {
+                                        {cols.into_iter().map(|col| {
                                             let key = col.key.clone();
                                             view! {
                                                 <th class=move || format!("data-table-header-cell {}", if col.sortable { "sortable" } else { "" })
