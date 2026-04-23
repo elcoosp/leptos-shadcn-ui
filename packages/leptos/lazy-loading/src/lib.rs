@@ -13,6 +13,7 @@ use leptos::prelude::*;
 use leptos::html::ElementChild;
 use leptos::task::spawn_local;
 use leptos::lazy;
+use leptos::web_sys;
 use leptos_shadcn_error_boundary::{ErrorContext, ErrorSeverity};
 use std::collections::HashMap;
 use std::sync::Arc;
