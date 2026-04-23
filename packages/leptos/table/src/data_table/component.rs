@@ -134,9 +134,9 @@ pub fn DataTable(
                 {move || {
                     let ss = state.get();
                     if ss.loading {
-                        view! { <div class="data-table-loading">"Loading..."</div> }.into_view()
+                        view! { <div class="data-table-loading">"Loading..."</div> }.into_any()
                     } else if let Some(err) = &ss.error {
-                        view! { <div class="data-table-error">{err.clone()}</div> }.into_view()
+                        view! { <div class="data-table-error">{err.clone()}</div> }.into_any()
                     } else {
                         view! {
                             <table class="data-table-table">
@@ -176,7 +176,7 @@ pub fn DataTable(
                                     }).collect::<Vec<_>>()}
                                 </tbody>
                             </table>
-                        }.into_view()
+                        }.into_any()
                     }
                 }}
             </div>
