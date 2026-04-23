@@ -15,6 +15,7 @@ pub use data_table::{
 
 mod tests;
 
+#[cfg(test)]
 mod tdd_tests;
 
 mod data_table_tests;
