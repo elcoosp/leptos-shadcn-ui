@@ -148,7 +148,7 @@ pub mod prelude {
     #[cfg(feature = "radio-group")]
     pub use super::{RadioGroup, RadioGroupProps};
     #[cfg(feature = "select")]
-    pub use super::{Select, SelectProps};
+    pub use leptos_shadcn_select::{Select, SelectProps};
     #[cfg(feature = "textarea")]
     pub use super::{Textarea, TextareaProps};
     
