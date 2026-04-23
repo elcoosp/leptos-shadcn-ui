@@ -10,7 +10,7 @@ pub use new_york::{Table as TableNewYork};
 pub use data_table::{
     DataTable, DataRow, DataColumn, DataTableState,
     SortDirection, FilterType, FilterOperator, SelectionMode, ExportFormat,
-    ColumnFilter, RowAction
+
 };
 
 mod tests;
