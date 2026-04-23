@@ -1,7 +1,4 @@
 //! AlertDialog overlay component
-//! 
-//! This module contains the AlertDialogOverlay component for the
-//! background overlay of the alert dialog.
 
 use leptos::prelude::*;
 use leptos_style::Style;
@@ -12,7 +9,7 @@ pub fn AlertDialogOverlay(
     #[prop(into, optional)] class: MaybeProp<String>,
     #[prop(into, optional)] id: MaybeProp<String>,
     #[prop(into, optional)] style: MaybeProp<String>,
-children: Children,
+    children: ChildrenFn,
 ) -> impl IntoView {
     let open = expect_context::<RwSignal<bool>>();
     let on_open_change = expect_context::<Option<Callback<bool>>>();
@@ -35,7 +32,7 @@ children: Children,
                 style=move || style.get().unwrap_or_default()
                 on:click=handle_click
             >
-{children()}
+                {children()}
             </div>
         </Show>
     }

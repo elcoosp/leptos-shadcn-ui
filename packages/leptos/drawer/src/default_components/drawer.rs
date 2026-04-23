@@ -11,14 +11,12 @@ pub fn Drawer(
     #[prop(into, optional)] on_open_change: Option<Callback<bool>>,
     #[prop(into, optional)] direction: Signal<DrawerDirection>,
     #[prop(into, optional)] should_scale_background: Signal<bool>,
-    children: Children,
+    children: ChildrenFn,
 ) -> impl IntoView {
     provide_context(open);
     provide_context(on_open_change);
     provide_context(direction);
     provide_context(should_scale_background);
-
-    let children = StoredValue::new(children);
 
     view! {
         <Show
@@ -26,7 +24,7 @@ pub fn Drawer(
             fallback=|| view! { <div></div> }
         >
             <div class="drawer-root">
-                {children.with_value(|c| c())}
+                {children()}
             </div>
         </Show>
     }

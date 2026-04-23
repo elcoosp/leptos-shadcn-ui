@@ -6,12 +6,11 @@ use web_sys::MouseEvent;
 
 #[component]
 pub fn DrawerPortal(
-    children: Children,
+    children: ChildrenFn,
 ) -> impl IntoView {
-    let children = StoredValue::new(children);
     view! {
         <div class="fixed inset-0 z-50">
-            {children.with_value(|c| c())}
+            {children()}
         </div>
     }
 }
@@ -21,7 +20,7 @@ pub fn DrawerOverlay(
     #[prop(into, optional)] class: MaybeProp<String>,
     #[prop(into, optional)] id: MaybeProp<String>,
     #[prop(into, optional)] style: MaybeProp<String>,
-    children: Children,
+    children: ChildrenFn,
 ) -> impl IntoView {
     let open_state = expect_context::<RwSignal<bool>>();
     let on_open_change = expect_context::<Option<Callback<bool>>>();
@@ -41,8 +40,6 @@ pub fn DrawerOverlay(
         format!("{}{} {}", base_class, scale_class, custom_class)
     };
 
-    let children = StoredValue::new(children);
-
     view! {
         <Show
             when=move || open_state.get()
@@ -54,7 +51,7 @@ pub fn DrawerOverlay(
                 style=move || style.get().unwrap_or_default()
                 on:click=handle_click
             >
-                {children.with_value(|c| c())}
+                {children()}
             </div>
         </Show>
     }
