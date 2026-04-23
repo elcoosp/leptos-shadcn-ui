@@ -18,7 +18,7 @@ pub fn Drawer(
     provide_context(direction);
     provide_context(should_scale_background);
 
-    let children = children();
+    let children = StoredValue::new(children);
 
     view! {
         <Show
@@ -26,7 +26,7 @@ pub fn Drawer(
             fallback=|| view! { <div></div> }
         >
             <div class="drawer-root">
-                {children}
+                {children.with_value(|c| c())}
             </div>
         </Show>
     }

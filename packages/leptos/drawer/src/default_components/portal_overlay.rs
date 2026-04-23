@@ -8,10 +8,10 @@ use web_sys::MouseEvent;
 pub fn DrawerPortal(
     children: Children,
 ) -> impl IntoView {
-    let children = children();
+    let children = StoredValue::new(children);
     view! {
         <div class="fixed inset-0 z-50">
-            {children}
+            {children.with_value(|c| c())}
         </div>
     }
 }
@@ -41,7 +41,7 @@ pub fn DrawerOverlay(
         format!("{}{} {}", base_class, scale_class, custom_class)
     };
 
-    let children = children();
+    let children = StoredValue::new(children);
 
     view! {
         <Show
@@ -54,7 +54,7 @@ pub fn DrawerOverlay(
                 style=move || style.get().unwrap_or_default()
                 on:click=handle_click
             >
-                {children}
+                {children.with_value(|c| c())}
             </div>
         </Show>
     }

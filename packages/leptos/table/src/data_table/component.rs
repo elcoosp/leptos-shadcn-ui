@@ -24,7 +24,7 @@ pub fn DataTable(
 
     if let Some(data) = data.get() { state.update(|s| s.data = data.clone()); }
     if let Some(cols) = columns.get() { state.update(|s| s.columns = cols.clone()); }
-    if let Some(ld) = loading.get() { state.update(|s| s.loading = *ld); }
+    if let Some(ld) = loading.get() { state.update(|s| s.loading = ld); }
     if let Some(err) = error.get() { state.update(|s| s.error = err.clone()); }
 
     let filtered_data = Signal::derive(move || {
@@ -119,8 +119,10 @@ pub fn DataTable(
         if let Some(cb) = &on_row_select { cb.run(selected); }
     };
 
+    let style_signal = move || style.get().unwrap_or_default();
+
     view! {
-        <div class=move || format!("data-table {}", class.get().unwrap_or_default()) id=id style=style>
+        <div class=move || format!("data-table {}", class.get().unwrap_or_default()) id=id style=style_signal>
             <div class="data-table-header">
                 <div class="data-table-title">"Data Table"</div>
                 <div class="data-table-actions">

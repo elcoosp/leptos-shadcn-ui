@@ -31,7 +31,7 @@ pub fn DrawerContent(
         format!("{}{} {}", base_class, direction_class, custom_class)
     };
 
-    let children = children();
+    let children = StoredValue::new(children);
 
     view! {
         <Show
@@ -46,7 +46,7 @@ pub fn DrawerContent(
                 role="dialog"
                 aria-modal="true"
             >
-                {children}
+                {children.with_value(|c| c())}
             </div>
         </Show>
     }
