@@ -11,7 +11,7 @@ pub fn DrawerPortal(
     let children = children();
     view! {
         <div class="fixed inset-0 z-50">
-            {children.clone()}
+            {children}
         </div>
     }
 }
@@ -54,7 +54,7 @@ pub fn DrawerOverlay(
                 style=move || style.get().unwrap_or_default()
                 on:click=handle_click
             >
-                {children.clone()}
+                {children}
             </div>
         </Show>
     }

@@ -62,12 +62,9 @@ impl Default for LazyComponentLoader {
 }
 
 // =============================================================================
-// Code-Split Components
 // =============================================================================
 
-fn prevent_default(e: SubmitEvent) {
     e.prevent_default();
-}
 
 // #[lazy]
 async fn lazy_button_component() -> Result<View<()>, String> {
@@ -176,11 +173,9 @@ pub fn LazyComponent(
                 }
             }
         });
-    });
 
     on_cleanup(move || {
         set_is_mounted.set(false);
-    });
 
     move || {
         if loading.get() {
@@ -218,8 +213,6 @@ pub fn LazyComponent(
         } else {
             view! { <div></div> }
         }
-    }
-}
 
 /// Hook for lazy loading components with proper cleanup
 pub fn use_lazy_component(name: &str) -> (ReadSignal<bool>, ReadSignal<Option<Result<View<()>, String>>>, WriteSignal<bool>) {

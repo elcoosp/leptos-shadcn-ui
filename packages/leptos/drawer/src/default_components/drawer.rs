@@ -26,7 +26,7 @@ pub fn Drawer(
             fallback=|| view! { <div></div> }
         >
             <div class="drawer-root">
-                {children.clone()}
+                {children}
             </div>
         </Show>
     }

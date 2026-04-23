@@ -46,7 +46,7 @@ pub fn DrawerContent(
                 role="dialog"
                 aria-modal="true"
             >
-                {children.clone()}
+                {children}
             </div>
         </Show>
     }
