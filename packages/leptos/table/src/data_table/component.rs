@@ -21,28 +21,28 @@ pub fn DataTable(
     children: Children,
 ) -> impl IntoView {
     let state = RwSignal::new(DataTableState::default());
-    
-    // Initialize state with props
-if let Some(data) = data.get() {
-        state.update(|s| s.data = data);
+
+    // Extract values from MaybeProp using .get() and assign to state
+    if let Some(data) = data.get() {
+        state.update(|s| s.data = data.clone());
     }
-if let Some(cols) = columns.get() {
-        state.update(|s| s.columns = columns);
+    if let Some(cols) = columns.get() {
+        state.update(|s| s.columns = cols.clone());
     }
-if let Some(ld) = loading.get() {
-        state.update(|s| s.loading = loading);
+    if let Some(ld) = loading.get() {
+        state.update(|s| s.loading = *ld);
     }
-if let Some(err) = error.get() {
-        state.update(|s| s.error = error);
+    if let Some(err) = error.get() {
+        state.update(|s| s.error = err.clone());
     }
 
     // Computed values
     let filtered_data = Signal::derive(move || {
-        let state = state.get();
-        let mut filtered = state.data.clone();
-        
+        let state_snapshot = state.get();
+        let mut filtered = state_snapshot.data.clone();
+
         // Apply filters
-        for filter in &state.filters {
+        for filter in &state_snapshot.filters {
             if filter.active {
                 filtered = filtered.into_iter().filter(|row| {
                     match filter.column_key.as_str() {
@@ -75,22 +75,22 @@ if let Some(err) = error.get() {
                 }).collect();
             }
         }
-        
+
         // Apply sorting
-        if state.sort_config.active {
+        if state_snapshot.sort_config.active {
             filtered.sort_by(|a, b| {
-                match state.sort_config.column_key.as_str() {
-                    "name" => match state.sort_config.direction {
+                match state_snapshot.sort_config.column_key.as_str() {
+                    "name" => match state_snapshot.sort_config.direction {
                         SortDirection::Ascending => a.name.cmp(&b.name),
                         SortDirection::Descending => b.name.cmp(&a.name),
                         _ => std::cmp::Ordering::Equal,
                     },
-                    "email" => match state.sort_config.direction {
+                    "email" => match state_snapshot.sort_config.direction {
                         SortDirection::Ascending => a.email.cmp(&b.email),
                         SortDirection::Descending => b.email.cmp(&a.email),
                         _ => std::cmp::Ordering::Equal,
                     },
-                    "age" => match state.sort_config.direction {
+                    "age" => match state_snapshot.sort_config.direction {
                         SortDirection::Ascending => a.age.cmp(&b.age),
                         SortDirection::Descending => b.age.cmp(&a.age),
                         _ => std::cmp::Ordering::Equal,
@@ -99,17 +99,17 @@ if let Some(err) = error.get() {
                 }
             });
         }
-        
+
         filtered
     });
 
     let paginated_data = Signal::derive(move || {
-        let state = state.get();
+        let state_snapshot = state.get();
         let filtered = filtered_data.get();
-        let start = (state.pagination.current_page - 1) * state.pagination.page_size;
-        let end = start + state.pagination.page_size;
-        
-        filtered.into_iter().skip(start as usize).take(state.pagination.page_size as usize).collect::<Vec<_>>()
+        let start = (state_snapshot.pagination.current_page - 1) * state_snapshot.pagination.page_size;
+        let end = start + state_snapshot.pagination.page_size;
+
+        filtered.into_iter().skip(start as usize).take(state_snapshot.pagination.page_size as usize).collect::<Vec<_>>()
     });
 
     // Event handlers
@@ -124,15 +124,15 @@ if let Some(err) = error.get() {
         } else {
             SortDirection::Ascending
         };
-        
+
         let new_sort = SortConfig {
             column_key: column_key.clone(),
             direction: new_direction,
             active: new_direction != SortDirection::None,
         };
-        
+
         state.update(|s| s.sort_config = new_sort.clone());
-        
+
         if let Some(callback) = &on_sort {
             callback.run(new_sort);
         }
@@ -151,9 +151,9 @@ if let Some(err) = error.get() {
         } else {
             selected.push(row_id);
         }
-        
+
         state.update(|s| s.selection.selected_rows = selected.clone());
-        
+
         if let Some(callback) = &on_row_select {
             callback.run(selected);
         }
@@ -161,7 +161,7 @@ if let Some(err) = error.get() {
 
     view! {
         <div
-            class=move || format!("data-table {}", class.as_ref().unwrap_or(&String::new()))
+            class=move || format!("data-table {}", class.get().unwrap_or_default())
             id=id
             style=style
         >
@@ -187,17 +187,17 @@ if let Some(err) = error.get() {
             // Table content
             <div class="data-table-content">
                 {move || {
-                    let state = state.get();
-                    if state.loading {
+                    let state_snapshot = state.get();
+                    if state_snapshot.loading {
                         view! { <div class="data-table-loading">"Loading..."</div> }.into_view()
-                    } else if let Some(error) = &state.error {
-                        view! { <div class="data-table-error">{error}</div> }.into_view()
+                    } else if let Some(error) = &state_snapshot.error {
+                        view! { <div class="data-table-error">{error.clone()}</div> }.into_view()
                     } else {
                         view! {
                             <table class="data-table-table">
                                 <thead>
                                     <tr>
-                                        {state.columns.iter().map(|column| {
+                                        {state_snapshot.columns.iter().map(|column| {
                                             let column_key = column.key.clone();
                                             view! {
                                                 <th
@@ -206,9 +206,9 @@ if let Some(err) = error.get() {
                                                 >
                                                     {column.title.clone()}
                                                     {move || {
-                                                        let state = state.get();
-                                                        if state.sort_config.column_key == column.key {
-                                                            match state.sort_config.direction {
+                                                        let state_snapshot = state.get();
+                                                        if state_snapshot.sort_config.column_key == column.key {
+                                                            match state_snapshot.sort_config.direction {
                                                                 SortDirection::Ascending => " ↑",
                                                                 SortDirection::Descending => " ↓",
                                                                 _ => "",
@@ -225,7 +225,6 @@ if let Some(err) = error.get() {
                                 <tbody>
                                     {paginated_data.get().iter().map(|row| {
                                         let row_clone = row.clone();
-                                        let row_id = row.id;
                                         view! {
                                             <tr
                                                 class="data-table-row"
@@ -262,8 +261,8 @@ if let Some(err) = error.get() {
                     </button>
                     <span class="data-table-pagination-info">
                         {move || {
-                            let state = state.get();
-                            format!("Page {} of {}", state.pagination.current_page, state.pagination.total_pages)
+                            let state_snapshot = state.get();
+                            format!("Page {} of {}", state_snapshot.pagination.current_page, state_snapshot.pagination.total_pages)
                         }}
                     </span>
                     <button
