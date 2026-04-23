@@ -1,13 +1,4 @@
 //! Lazy loading system for shadcn/ui Leptos components
-//!
-//! This module provides lazy loading capabilities to reduce initial bundle size
-//! by loading components only when they're needed.
-//!
-//! # Code Splitting
-//!
-//! This module uses Leptos's `#[lazy]` macro to enable component-level code splitting.
-//! Each lazy-loaded component is compiled into a separate WASM chunk that is loaded
-//! on-demand when the component is first rendered.
 
 use leptos::prelude::*;
 use leptos::html::ElementChild;
@@ -30,14 +21,12 @@ pub struct LazyComponentLoader {
 pub type ComponentLoader = Box<dyn Fn() -> Result<View<()>, String> + Send + Sync>;
 
 impl LazyComponentLoader {
-    /// Create a new lazy component loader
     pub fn new() -> Self {
         Self {
             components: Arc::new(Mutex::new(HashMap::new())),
         }
     }
 
-    /// Register a component for lazy loading
     pub fn register_component<F>(&self, name: &str, loader: F)
     where
         F: Fn() -> Result<View<()>, String> + Send + Sync + 'static,
@@ -46,7 +35,6 @@ impl LazyComponentLoader {
         components.insert(name.to_string(), Box::new(loader));
     }
 
-    /// Load a component by name
     pub fn load_component(&self, name: &str) -> Result<View<()>, String> {
         let components = self.components.lock().unwrap();
         if let Some(loader) = components.get(name) {
@@ -56,13 +44,11 @@ impl LazyComponentLoader {
         }
     }
 
-    /// Check if a component is registered
     pub fn has_component(&self, name: &str) -> bool {
         let components = self.components.lock().unwrap();
         components.contains_key(name)
     }
 
-    /// Get all registered component names
     pub fn registered_components(&self) -> Vec<String> {
         let components = self.components.lock().unwrap();
         components.keys().cloned().collect()
@@ -79,7 +65,6 @@ impl Default for LazyComponentLoader {
 // Code-Split Components
 // =============================================================================
 
-/// Helper to prevent event default (used as a function pointer to keep View<()>)
 fn prevent_default(e: SubmitEvent) {
     e.prevent_default();
 }
@@ -90,7 +75,8 @@ async fn lazy_button_component() -> Result<View<()>, String> {
         <div class="lazy-demo-component">
             <button class="lazy-demo-button">"Lazy Loaded Button"</button>
         </div>
-    })
+    }
+    .into_view())
 }
 
 #[lazy]
@@ -100,7 +86,8 @@ async fn lazy_card_component() -> Result<View<()>, String> {
             <h3>"Lazy Loaded Card"</h3>
             <p>"This card was loaded on-demand from a separate WASM chunk."</p>
         </div>
-    })
+    }
+    .into_view())
 }
 
 #[lazy]
@@ -110,7 +97,8 @@ async fn lazy_input_component() -> Result<View<()>, String> {
             <input type="text" placeholder="Lazy loaded input..." />
             <p>"This input component was loaded from its own chunk."</p>
         </div>
-    })
+    }
+    .into_view())
 }
 
 #[lazy]
@@ -122,7 +110,8 @@ async fn lazy_alert_component() -> Result<View<()>, String> {
                 <p>"This alert component was loaded on-demand."</p>
             </div>
         </div>
-    })
+    }
+    .into_view())
 }
 
 #[lazy]
@@ -143,7 +132,8 @@ async fn lazy_form_component() -> Result<View<()>, String> {
             </form>
             <p>"This form component demonstrates lazy loading of larger components."</p>
         </div>
-    })
+    }
+    .into_view())
 }
 
 // =============================================================================
@@ -215,7 +205,7 @@ pub fn LazyComponent(
 
                 view! {
                     <div class="lazy-loading-error-fallback">
-                        <p class="error-message">{error_context.message.to_string()}</p>
+                        <p class="error-message">{error_context.message}</p>
                         <button class="error-retry" on:click=retry_loading>"Retry"</button>
                     </div>
                 }.into_any()
