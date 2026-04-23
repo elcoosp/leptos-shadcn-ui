@@ -14,6 +14,7 @@ use leptos::html::ElementChild;
 use leptos::task::spawn_local;
 use leptos::lazy;
 use leptos::web_sys;
+use leptos::ev::SubmitEvent;
 use leptos_shadcn_error_boundary::{ErrorContext, ErrorSeverity};
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -79,7 +80,7 @@ impl Default for LazyComponentLoader {
 // =============================================================================
 
 /// Helper to prevent event default (used as a function pointer to keep View<()>)
-fn prevent_default(e: web_sys::Event) {
+fn prevent_default(e: SubmitEvent) {
     e.prevent_default();
 }
 
@@ -214,7 +215,7 @@ pub fn LazyComponent(
 
                 view! {
                     <div class="lazy-loading-error-fallback">
-                        <p class="error-message">{error_context.message().to_string()}</p>
+                        <p class="error-message">{error_context.message.to_string()}</p>
                         <button class="error-retry" on:click=retry_loading>"Retry"</button>
                     </div>
                 }.into_any()
