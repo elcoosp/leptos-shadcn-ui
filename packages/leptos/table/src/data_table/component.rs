@@ -140,11 +140,12 @@ pub fn DataTable(
                     } else if let Some(err) = &ss.error {
                         view! { <div class="data-table-error">{err.clone()}</div> }.into_any()
                     } else {
+                        let cols = ss.columns.clone(); // clone to own the data
                         view! {
                             <table class="data-table-table">
                                 <thead>
                                     <tr>
-                                        {ss.columns.iter().map(|col| {
+                                        {cols.iter().map(|col| {
                                             let key = col.key.clone();
                                             view! {
                                                 <th class=move || format!("data-table-header-cell {}", if col.sortable { "sortable" } else { "" })
