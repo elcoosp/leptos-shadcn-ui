@@ -186,7 +186,7 @@ pub fn RichErrorFallback(
                     <button
                         class="toggle-details"
                         on:click=move |_| {
-                            show_details.set(!show_details.get());
+                            set_show_details.set(!show_details.get());
                         }
                     >
                         {move || if show_details.get() { "Hide" } else { "Show" }}
