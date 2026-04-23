@@ -3,7 +3,6 @@
 use leptos::prelude::*;
 use leptos::html::ElementChild;
 use leptos::task::spawn_local;
-use leptos::lazy;
 use leptos::web_sys;
 use leptos::ev::SubmitEvent;
 use leptos_shadcn_error_boundary::{ErrorContext, ErrorSeverity};
@@ -62,83 +61,6 @@ impl Default for LazyComponentLoader {
 }
 
 // =============================================================================
-// =============================================================================
-
-    e.prevent_default();
-
-// #[lazy]
-async fn lazy_button_component() -> Result<View<()>, String> {
-    Ok(view! {
-        <div class="lazy-demo-component">
-            <button class="lazy-demo-button">"Lazy Loaded Button"</button>
-        </div>
-    }
-    
-    )
-}
-
-// #[lazy]
-async fn lazy_card_component() -> Result<View<()>, String> {
-    Ok(view! {
-        <div class="lazy-demo-card">
-            <h3>"Lazy Loaded Card"</h3>
-            <p>"This card was loaded on-demand from a separate WASM chunk."</p>
-        </div>
-    }
-    
-    )
-}
-
-// #[lazy]
-async fn lazy_input_component() -> Result<View<()>, String> {
-    Ok(view! {
-        <div class="lazy-demo-input">
-            <input type="text" placeholder="Lazy loaded input..." />
-            <p>"This input component was loaded from its own chunk."</p>
-        </div>
-    }
-    
-    )
-}
-
-// #[lazy]
-async fn lazy_alert_component() -> Result<View<()>, String> {
-    Ok(view! {
-        <div class="lazy-demo-alert">
-            <div class="alert-content">
-                <strong>"Lazy Alert!"</strong>
-                <p>"This alert component was loaded on-demand."</p>
-            </div>
-        </div>
-    }
-    
-    )
-}
-
-// #[lazy]
-async fn lazy_form_component() -> Result<View<()>, String> {
-    Ok(view! {
-        <div class="lazy-demo-form">
-            <h3>"Lazy Loaded Form"</h3>
-            <form on:submit=prevent_default>
-                <div class="form-field">
-                    <label>"Username"</label>
-                    <input type="text" placeholder="Enter username" />
-                </div>
-                <div class="form-field">
-                    <label>"Email"</label>
-                    <input type="email" placeholder="Enter email" />
-                </div>
-                <button type="submit">"Submit"</button>
-            </form>
-            <p>"This form component demonstrates lazy loading of larger components."</p>
-        </div>
-    }
-    
-    )
-}
-
-// =============================================================================
 // Lazy Component Wrapper
 // =============================================================================
 
@@ -173,9 +95,11 @@ pub fn LazyComponent(
                 }
             }
         });
+    });
 
     on_cleanup(move || {
         set_is_mounted.set(false);
+    });
 
     move || {
         if loading.get() {
@@ -187,10 +111,10 @@ pub fn LazyComponent(
                         <div class="loading-spinner"></div>
                         <p>"Loading component..."</p>
                     </div>
-                }
+                }.into_any()
             }
         } else if let Some(Ok(comp)) = component.get() {
-            comp
+            comp.into_any()
         } else if let Some(err) = error.get() {
             if let Some(error_fn) = &error_fallback {
                 error_fn(err)
@@ -208,11 +132,13 @@ pub fn LazyComponent(
                         <p class="error-message">{error_context.message}</p>
                         <button class="error-retry" on:click=retry_loading>"Retry"</button>
                     </div>
-                }
+                }.into_any()
             }
         } else {
-            view! { <div></div> }
+            view! { <div></div> }.into_any()
         }
+    }
+}
 
 /// Hook for lazy loading components with proper cleanup
 pub fn use_lazy_component(name: &str) -> (ReadSignal<bool>, ReadSignal<Option<Result<View<()>, String>>>, WriteSignal<bool>) {
