@@ -7,6 +7,7 @@
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
+use rand::RngExt;
 use tokio::sync::RwLock;
 use tokio::time::interval;
 use serde::{Deserialize, Serialize};
@@ -640,32 +641,32 @@ impl AutomatedMonitor {
     async fn simulate_render_time(&self, _component: &str) -> f64 {
         // Simulate render time with some variation
         use rand::Rng;
-        let mut rng = rand::thread_rng();
-        rng.gen_range(10.0..50.0)
+        let mut rng = rand::rng();
+        rng.random_range(10.0..50.0)
     }
 
     async fn simulate_memory_usage(&self, _component: &str) -> u64 {
         use rand::Rng;
-        let mut rng = rand::thread_rng();
-        rng.gen_range(1024..10240) // 1KB to 10KB
+        let mut rng = rand::rng();
+        rng.random_range(1024..10240) // 1KB to 10KB
     }
 
     async fn simulate_bundle_size(&self, _component: &str) -> u64 {
         use rand::Rng;
-        let mut rng = rand::thread_rng();
-        rng.gen_range(1024..5120) // 1KB to 5KB
+        let mut rng = rand::rng();
+        rng.random_range(1024..5120) // 1KB to 5KB
     }
 
     async fn simulate_error_count(&self, _component: &str) -> u32 {
         use rand::Rng;
-        let mut rng = rand::thread_rng();
-        rng.gen_range(0..5)
+        let mut rng = rand::rng();
+        rng.random_range(0..5)
     }
 
     async fn simulate_success_rate(&self, _component: &str) -> f64 {
         use rand::Rng;
-        let mut rng = rand::thread_rng();
-        rng.gen_range(0.95..1.0)
+        let mut rng = rand::rng();
+        rng.random_range(0.95..1.0)
     }
 
     async fn get_system_memory_usage(&self) -> u64 {
