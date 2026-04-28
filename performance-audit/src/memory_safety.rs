@@ -160,7 +160,7 @@ impl MemorySafetyTester {
         Self {
             config,
             results: HashMap::new(),
-            memory_snapshots: Vec::new(),
+            _memory_snapshots: Vec::new(),
         }
     }
 
