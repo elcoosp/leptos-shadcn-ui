@@ -196,6 +196,23 @@ leptos-shadcn-sheet = { path = "packages/leptos/sheet" }
 leptos-shadcn-avatar = { path = "packages/leptos/avatar" }
 leptos-shadcn-resizable = { path = "packages/leptos/resizable" }
 leptos-shadcn-carousel = { path = "packages/leptos/carousel" }
+# Component crates consumed by the umbrella that were previously hard-coded
+# (`version = "0.9.0", path = ...`) in packages/leptos-shadcn-ui/Cargo.toml.
+leptos-shadcn-button-group = { path = "packages/leptos/button-group" }
+leptos-shadcn-kbd = { path = "packages/leptos/kbd" }
+leptos-shadcn-spinner = { path = "packages/leptos/spinner" }
+leptos-shadcn-empty = { path = "packages/leptos/empty" }
+leptos-shadcn-item = { path = "packages/leptos/item" }
+leptos-shadcn-typography = { path = "packages/leptos/typography" }
+leptos-shadcn-field = { path = "packages/leptos/field" }
+leptos-shadcn-input-group = { path = "packages/leptos/input-group" }
+leptos-shadcn-native-select = { path = "packages/leptos/native-select" }
+leptos-shadcn-toggle-group = { path = "packages/leptos/toggle-group" }
+leptos-shadcn-sidebar = { path = "packages/leptos/sidebar" }
+leptos-shadcn-sonner = { path = "packages/leptos/sonner" }
+leptos-shadcn-chart = { path = "packages/leptos/chart" }
+leptos-shadcn-analytics = { path = "packages/leptos/analytics" }
+leptos-shadcn-performance-audit = { path = "performance-audit" }
 
 # =============================================================================
 # WASM Size Optimization Profiles

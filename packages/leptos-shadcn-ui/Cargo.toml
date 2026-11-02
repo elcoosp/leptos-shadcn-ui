@@ -1,8 +1,8 @@
 [package]
 name = "leptos-shadcn-ui"
-version = "0.9.0"
-edition = "2021"
-description = "A comprehensive collection of beautiful, accessible UI components built for Leptos v0.8+, inspired by shadcn/ui. Features production-ready infrastructure with automated WASM testing, E2E integration, performance benchmarking, and accessibility automation. Core components with 100% test coverage, cross-browser compatibility, and WCAG compliance. Fully compatible with Leptos v0.8 attribute system."
+version.workspace = true
+edition.workspace = true
+description = "A comprehensive collection of beautiful, accessible UI components built for Leptos v0.9, inspired by shadcn/ui. Features production-ready infrastructure with automated WASM testing, E2E integration, performance benchmarking, and accessibility automation. Core components with cross-browser compatibility and WCAG compliance. Fully compatible with the Leptos v0.9 attribute system."
 homepage = "https://github.com/cloud-shuttle/leptos-shadcn-ui"
 repository = "https://github.com/cloud-shuttle/leptos-shadcn-ui"
 license = "MIT"
@@ -10,7 +10,6 @@ authors = ["CloudShuttle <info@cloudshuttle.com>"]
 keywords = ["leptos", "ui", "components", "shadcn", "web"]
 categories = ["wasm", "gui", "web-programming"]
 readme = "../../README.md"
-rust-version = "1.70"
 
 [dependencies]
 # Core Leptos dependencies (v0.8.x)
@@ -48,19 +47,19 @@ leptos-shadcn-pagination = { workspace = true, optional = true }
 leptos-shadcn-slider = { workspace = true, optional = true }
 leptos-shadcn-toggle = { workspace = true, optional = true }
 leptos-shadcn-carousel = { workspace = true, optional = true }
-leptos-shadcn-button-group = { version = "0.9.0", path = "../leptos/button-group", optional = true }
-leptos-shadcn-kbd = { version = "0.9.0", path = "../leptos/kbd", optional = true }
-leptos-shadcn-spinner = { version = "0.9.0", path = "../leptos/spinner", optional = true }
-leptos-shadcn-empty = { version = "0.9.0", path = "../leptos/empty", optional = true }
-leptos-shadcn-item = { version = "0.9.0", path = "../leptos/item", optional = true }
-leptos-shadcn-typography = { version = "0.9.0", path = "../leptos/typography", optional = true }
-leptos-shadcn-field = { version = "0.9.0", path = "../leptos/field", optional = true }
-leptos-shadcn-input-group = { version = "0.9.0", path = "../leptos/input-group", optional = true }
-leptos-shadcn-native-select = { version = "0.9.0", path = "../leptos/native-select", optional = true }
-leptos-shadcn-toggle-group = { version = "0.9.0", path = "../leptos/toggle-group", optional = true }
-leptos-shadcn-sidebar = { version = "0.9.0", path = "../leptos/sidebar", optional = true }
-leptos-shadcn-sonner = { version = "0.9.0", path = "../leptos/sonner", optional = true }
-leptos-shadcn-chart = { version = "0.9.0", path = "../leptos/chart", optional = true }
+leptos-shadcn-button-group = { workspace = true, optional = true }
+leptos-shadcn-kbd = { workspace = true, optional = true }
+leptos-shadcn-spinner = { workspace = true, optional = true }
+leptos-shadcn-empty = { workspace = true, optional = true }
+leptos-shadcn-item = { workspace = true, optional = true }
+leptos-shadcn-typography = { workspace = true, optional = true }
+leptos-shadcn-field = { workspace = true, optional = true }
+leptos-shadcn-input-group = { workspace = true, optional = true }
+leptos-shadcn-native-select = { workspace = true, optional = true }
+leptos-shadcn-toggle-group = { workspace = true, optional = true }
+leptos-shadcn-sidebar = { workspace = true, optional = true }
+leptos-shadcn-sonner = { workspace = true, optional = true }
+leptos-shadcn-chart = { workspace = true, optional = true }
 
 # Advanced components (published dependencies for v0.9.0 release)
 leptos-shadcn-form = { workspace = true, optional = true }
@@ -81,13 +80,13 @@ leptos-shadcn-drawer = { workspace = true, optional = true }
 leptos-shadcn-alert-dialog = { workspace = true, optional = true }
 leptos-shadcn-avatar = { workspace = true, optional = true }
 leptos-shadcn-resizable = { workspace = true, optional = true }
-leptos-shadcn-performance-audit = { version = "0.1.0", path = "../../performance-audit", optional = true }
+leptos-shadcn-performance-audit = { workspace = true, optional = true }
 
 # Additional packages (published dependencies for v0.9.0 release)
 leptos-shadcn-error-boundary = { workspace = true, optional = true }
 leptos-shadcn-lazy-loading = { workspace = true, optional = true }
 leptos-shadcn-registry = { workspace = true, optional = true }
-leptos-shadcn-analytics = { version = "0.1.0", path = "../leptos/analytics", optional = true }
+leptos-shadcn-analytics = { workspace = true, optional = true }
 
 # Additional dependencies
 tailwind_fuse = "0.3"
